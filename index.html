@@ -1,0 +1,1467 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<meta name="color-scheme" content="dark light">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassaforte">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-/m1mWsIcvObvum6kIkRdpAph2hIK2Kv5nyvycqK2N74='; style-src-elem 'sha256-XWL7eleBCrrIvpuBv5m1gjv+7fLpRP7Z5FMdJ93MJVk='; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; manifest-src 'self'; connect-src https://api.github.com; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Crect x='28' y='44' width='44' height='34' rx='8' fill='white'/%3E%3Cpath d='M36 44v-8a14 14 0 0 1 28 0v8' stroke='white' stroke-width='7' fill='none'/%3E%3C/svg%3E">
+<title>Cassaforte Password</title>
+<style>
+:root{
+  --bg:#070b16;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.09);--bd:rgba(255,255,255,.12);
+  --txt:#eef2ff;--mut:#9aa7c7;--acc:#7c5cff;--acc2:#22d3ee;--ok:#34d399;--warn:#fbbf24;--bad:#fb7185;
+  --field:rgba(255,255,255,.06);--shadow:0 12px 44px rgba(0,0,0,.5);--digit:#22d3ee;--sym:#ff7ac6;--orb:.55;
+  --grad:linear-gradient(135deg,var(--acc),var(--acc2));
+}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){
+  --bg:#eef1fb;--glass:rgba(255,255,255,.72);--glass2:rgba(255,255,255,.95);--bd:rgba(20,32,80,.13);
+  --txt:#161c3a;--mut:#58648f;--acc:#6a4cf0;--acc2:#0ea5c6;--ok:#059669;--warn:#b45309;--bad:#e11d48;
+  --field:rgba(20,32,80,.05);--shadow:0 12px 34px rgba(60,70,140,.16);--digit:#0b86a5;--sym:#d6338f;--orb:.3}}
+:root[data-theme=light]{
+  --bg:#eef1fb;--glass:rgba(255,255,255,.72);--glass2:rgba(255,255,255,.95);--bd:rgba(20,32,80,.13);
+  --txt:#161c3a;--mut:#58648f;--acc:#6a4cf0;--acc2:#0ea5c6;--ok:#059669;--warn:#b45309;--bad:#e11d48;
+  --field:rgba(20,32,80,.05);--shadow:0 12px 34px rgba(60,70,140,.16);--digit:#0b86a5;--sym:#d6338f;--orb:.3}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;color-scheme:dark light}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;filter:blur(90px);opacity:var(--orb);animation:drift 22s ease-in-out infinite alternate}
+.bg .o1{width:46vmax;height:46vmax;left:-14vmax;top:-12vmax;background:#7c5cff}
+.bg .o2{width:40vmax;height:40vmax;right:-12vmax;top:18vh;background:#22d3ee;animation-delay:-7s}
+.bg .o3{width:36vmax;height:36vmax;left:22vw;bottom:-18vmax;background:#ff5cae;animation-delay:-13s}
+@keyframes drift{to{transform:translate3d(6vmax,4vmax,0) scale(1.12)}}
+.wrap{max-width:780px;margin:0 auto;padding:18px 16px 130px}
+.center{max-width:450px;margin:5vh auto 0;padding-bottom:40px}
+h1{font-size:1.3rem;margin:0;letter-spacing:-.01em}
+h2{font-size:1.08rem;margin:0 0 12px;letter-spacing:-.01em}
+h3{font-size:.78rem;margin:20px 0 8px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+p{margin:.4em 0}
+.mut{color:var(--mut);font-size:.92rem}
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.card{background:var(--glass);border:1px solid var(--bd);border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%)}
+.hero-card{position:relative;overflow:hidden}
+.hero-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(124,92,255,.7),rgba(34,211,238,.0) 45%,rgba(255,92,174,.55));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;filter:drop-shadow(0 6px 16px rgba(124,92,255,.5))}
+.hero{width:92px;height:92px;position:relative;margin:4px auto 16px}
+.hero svg{width:100%;height:100%;position:relative;filter:drop-shadow(0 10px 26px rgba(124,92,255,.55))}
+.hero::before{content:"";position:absolute;inset:-12px;border-radius:50%;background:conic-gradient(from 0deg,#7c5cff,#22d3ee,#ff5cae,#7c5cff);filter:blur(18px);opacity:.55;animation:spin 7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title-c{text-align:center}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--glass2);padding:11px 16px;border-radius:14px;min-height:46px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;transition:transform .15s,box-shadow .2s,border-color .2s,background .2s}
+button:hover{border-color:var(--acc2);transform:translateY(-1px)}
+button:active{transform:translateY(0) scale(.98)}
+button.pri{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 8px 24px rgba(124,92,255,.42)}
+button.pri:hover{box-shadow:0 10px 30px rgba(124,92,255,.6);border-color:transparent}
+button.dng{color:var(--bad)}
+button.dng:hover{border-color:var(--bad)}
+button.sm{min-height:38px;padding:7px 12px;font-size:.9rem}
+button.full{width:100%}
+button:disabled{opacity:.5;cursor:default;transform:none}
+.ibtn{width:40px;height:40px;min-height:40px;padding:0;border-radius:12px}
+input[type=text],input[type=password],input[type=search],textarea,select{width:100%;font:inherit;color:var(--txt);background:var(--field);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;min-height:46px;transition:border-color .2s,box-shadow .2s}
+select option{color:#111}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc2);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+label{display:block;font-size:.85rem;color:var(--mut);margin:14px 0 6px;font-weight:600}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1;min-width:0}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:min(480px,calc(100% - 24px));display:flex;gap:4px;padding:6px;
+  background:var(--glass);border:1px solid var(--bd);border-radius:24px;box-shadow:var(--shadow);z-index:20;-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
+.nav button{flex:1;flex-direction:column;gap:2px;border:0;background:transparent;border-radius:18px;font-size:.72rem;min-height:56px;padding:6px 4px;color:var(--mut);position:relative}
+.nav button .ic{width:22px;height:22px}
+.nav button.on{background:var(--grad);color:#fff;box-shadow:0 6px 20px rgba(124,92,255,.45)}
+.nav button:hover{transform:none}
+.badge{position:absolute;top:4px;right:calc(50% - 26px);background:var(--sym);color:#fff;border-radius:999px;font-size:.62rem;min-width:18px;height:18px;padding:0 5px;display:none;place-items:center}
+.seg{display:flex;gap:4px;background:var(--field);border:1px solid var(--bd);padding:4px;border-radius:16px;margin-bottom:14px}
+.seg button{flex:1;border:0;background:transparent;min-height:40px;border-radius:12px;color:var(--mut)}
+.seg button.on{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(124,92,255,.4)}
+.out{font:600 1.4rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--field);border:1px solid var(--bd);border-radius:18px;padding:20px 18px;
+  word-break:break-word;white-space:pre-wrap;min-height:92px;display:block;letter-spacing:.02em}
+.out span{white-space:pre-wrap}
+.c-d{color:var(--digit)}.c-s{color:var(--sym)}
+.meter{height:10px;border-radius:8px;background:var(--field);overflow:hidden;margin:14px 0 8px;border:1px solid var(--bd)}
+.meter>i{display:block;height:100%;width:0;border-radius:8px;transition:width .35s cubic-bezier(.2,.8,.2,1),background .3s,box-shadow .3s}
+.strrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--field);border:1px solid var(--bd);white-space:nowrap}
+.chip.ok{color:var(--ok)}.chip.warn{color:var(--warn)}.chip.bad{color:var(--bad)}
+.actions{margin-top:16px}
+.actions button{flex:1;min-width:0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:10px}
+.chk{display:flex;align-items:center;gap:12px;min-height:42px;margin:0;color:var(--txt);font-size:1rem;font-weight:500;cursor:pointer}
+.chk input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:8px;border:1.5px solid var(--bd);background:var(--field);display:grid;place-items:center;flex:none;cursor:pointer;transition:.15s}
+.chk input::after{content:"";width:11px;height:6px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:rotate(-45deg) scale(0);margin-top:-2px;transition:.15s}
+.chk input:checked{background:var(--grad);border-color:transparent}
+.chk input:checked::after{transform:rotate(-45deg) scale(1)}
+.chk input:focus-visible{box-shadow:0 0 0 3px rgba(34,211,238,.35)}
+.rng{display:flex;align-items:baseline;justify-content:space-between}
+.rng b{font-size:1.5rem;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:8px;border:1px solid var(--bd);outline:none;padding:0;min-height:0;margin:10px 0 6px;
+  background:linear-gradient(90deg,var(--acc) var(--p,30%),var(--field) var(--p,30%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--grad);border:3px solid #fff;box-shadow:0 4px 14px rgba(124,92,255,.55);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--acc2);border:3px solid #fff;box-shadow:0 4px 14px rgba(124,92,255,.55);cursor:pointer}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(34,211,238,.3)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.item{display:flex;gap:14px;align-items:flex-start;animation:up .4s ease both}
+.avatar{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-weight:800;font-size:1.15rem;color:#fff;flex:none;text-shadow:0 1px 4px rgba(0,0,0,.25)}
+.item .body{flex:1;min-width:0}
+.item .t{font-weight:700;word-break:break-word;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.item .s{color:var(--mut);font-size:.88rem;word-break:break-all}
+.pw{font-family:ui-monospace,Menlo,Consolas,monospace;word-break:break-all;margin-top:8px;padding:8px 12px;background:var(--field);border-radius:12px;border:1px solid var(--bd);font-size:.95rem;white-space:pre-wrap}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.empty{text-align:center;color:var(--mut);padding:44px 10px}
+.empty .ic{width:44px;height:44px;margin-bottom:8px;opacity:.7}
+dialog{border:1px solid var(--bd);border-radius:26px;background:var(--glass2);color:var(--txt);width:min(540px,calc(100vw - 24px));padding:22px;max-height:92vh;overflow:auto;box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(28px);backdrop-filter:blur(28px)}
+dialog[open]{animation:pop .25s cubic-bezier(.2,.9,.3,1.2)}
+dialog::backdrop{background:rgba(3,6,16,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+.toast{position:fixed;left:50%;bottom:calc(98px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:rgba(10,14,30,.95);color:#fff;border:1px solid rgba(255,255,255,.16);padding:11px 18px;border-radius:16px;
+  opacity:0;pointer-events:none;transition:.28s;z-index:99;max-width:92vw;text-align:center;font-size:.92rem;box-shadow:0 12px 36px rgba(0,0,0,.5)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.note{background:var(--field);border-left:3px solid var(--warn);padding:11px 14px;border-radius:12px;font-size:.9rem;margin:14px 0}
+.in{animation:up .45s ease both}
+.sep{height:1px;background:var(--bd);margin:18px 0}
+.err{color:var(--bad);min-height:1.5em;font-size:.9rem}
+.hdr{display:flex;gap:8px;align-items:center}
+.spin svg{animation:spin 1s linear infinite}
+#bSync.ok{color:var(--ok)}#bSync.err{color:var(--bad)}#bSync.offline{color:var(--warn)}
+.steps{padding-left:20px;margin:10px 0}.steps li{margin:4px 0}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--field);border:1px solid var(--bd);padding:1px 6px;border-radius:8px;font-size:.88em}
+a.lnk{color:var(--acc2);font-weight:600;text-decoration:none}a.lnk:hover{text-decoration:underline}
+.kbox{font:700 1.15rem/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:center;letter-spacing:.06em;background:var(--field);border:1px dashed var(--acc2);border-radius:16px;padding:16px 10px;margin:14px 0;word-break:break-all;user-select:all}
+.sec{list-style:none;padding:0;margin:8px 0 12px}
+.sec li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bd);font-size:.92rem}
+.sec li:last-child{border:0}
+.sec .ic{color:var(--ok);margin-top:2px}
+.sec b{display:block}
+button.link{background:none;border:0;color:var(--acc2);min-height:0;padding:12px 8px 4px;font-weight:600;font-size:.92rem}
+.files{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.files:empty{display:none}
+.fitem{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--field);border:1px solid var(--bd);border-radius:14px;padding:8px 10px}
+.fitem .fi{flex:1;min-width:140px}
+.fitem .fn{font-weight:600;word-break:break-all;font-size:.92rem}
+.fitem .fs{color:var(--mut);font-size:.8rem;word-break:break-all}
+.ficon{width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:.6rem;font-weight:800;flex:none;text-transform:uppercase;overflow:hidden}
+.drop{border:1.5px dashed var(--bd);border-radius:14px;padding:14px;text-align:center;color:var(--mut);cursor:pointer;transition:.2s;font-weight:600}
+.drop:hover,.drop.on,.drop:focus-visible{border-color:var(--acc2);color:var(--txt);outline:none}
+.prevbox{display:grid;place-items:center;background:var(--field);border-radius:16px;padding:8px;margin:12px 0;max-height:60vh;overflow:auto}
+.prevbox img{max-width:100%;max-height:56vh;border-radius:10px}
+.notebox{white-space:pre-wrap;word-break:break-word;background:var(--field);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:.92rem}
+[hidden]{display:none!important}
+@media(max-width:520px){.opts{grid-template-columns:1fr}.out{font-size:1.15rem;padding:16px 14px}.wrap{padding:14px 12px 130px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<!-- icone -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+<symbol id="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="17" fill="url(#gr)"/><rect x="17" y="28" width="30" height="22" rx="6" fill="#fff"/><path d="M23 28v-5a9 9 0 0 1 18 0v5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="38" r="3.4" fill="#5b45e0"/><rect x="30.6" y="38" width="2.8" height="7" rx="1.4" fill="#5b45e0"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-finger" viewBox="0 0 24 24"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></symbol>
+</defs></svg>
+<div class="bg" aria-hidden="true"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
+<noscript><div class="wrap">Questa app richiede JavaScript.</div></noscript>
+
+<!-- ============ CREA CASSAFORTE ============ -->
+<section id="vSetup" class="wrap center" hidden>
+  <div class="in">
+    <div class="hero"><svg><use href="#logo"/></svg></div>
+    <div class="title-c" style="margin-bottom:18px"><h1 style="font-size:1.6rem">Cassaforte Password</h1><p class="mut">Genera e custodisci le tue password, solo sul tuo dispositivo.</p></div>
+  </div>
+  <div class="card hero-card in">
+    <p class="mut">Crea la tua <b>password principale</b>: è l'unica da ricordare e protegge tutte le altre.</p>
+    <form id="fSetup" autocomplete="off">
+      <label for="sPw">Password principale (minimo 12 caratteri)</label>
+      <input id="sPw" type="password" autocomplete="new-password" required minlength="12">
+      <div class="meter" style="margin:10px 0 0"><i id="sMeter"></i></div>
+      <div class="strrow" style="margin-top:6px"><span id="sChip" class="chip" hidden></span></div>
+      <label for="sPw2">Ripeti la password principale</label>
+      <input id="sPw2" type="password" autocomplete="new-password" required minlength="12">
+      <div class="note">Dopo la creazione ti mostrerò una <b>Chiave Segreta</b>: insieme alla password protegge i dati anche nel cloud. Se perdi password <b>e</b> chiave, <b>non esiste modo di recuperare</b> le password salvate. Scegli una frase lunga che ricorderai.</div>
+      <button class="pri full" id="bSetup">Crea cassaforte</button>
+    </form>
+    <button class="link full" id="bLinkOpen" type="button">Ho già una cassaforte nel cloud: collega questo dispositivo</button>
+  </div>
+</section>
+
+<!-- ============ SBLOCCA ============ -->
+<section id="vUnlock" class="wrap center" hidden>
+  <div class="in">
+    <div class="hero"><svg><use href="#logo"/></svg></div>
+    <div class="title-c" style="margin-bottom:18px"><h1 style="font-size:1.6rem">Cassaforte bloccata</h1><p class="mut">Inserisci la password principale per entrare.</p></div>
+  </div>
+  <div class="card hero-card in">
+    <form id="fUnlock" autocomplete="off">
+      <label for="uPw" style="margin-top:0">Password principale</label>
+      <input id="uPw" type="password" autocomplete="current-password" required>
+      <div id="uSkWrap" hidden><label for="uSk">Chiave segreta (richiesta su questo dispositivo)</label><input id="uSk" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-…"></div>
+      <p id="uErr" class="err"></p>
+      <button class="pri full" id="bUnlock">Sblocca</button>
+    </form>
+    <button class="full" id="bBio" style="margin-top:10px" hidden type="button"><svg class="ic"><use href="#i-finger"/></svg> Sblocca con impronta / Face ID</button>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="vApp" class="wrap" hidden>
+  <div class="bar">
+    <div class="brand"><svg class="logo"><use href="#logo"/></svg><h1>Cassaforte</h1></div>
+    <div class="hdr"><button id="bSync" class="ibtn" aria-label="Sincronizza" hidden><svg class="ic"><use href="#i-cloud"/></svg></button><button id="bLock" class="sm"><svg class="ic"><use href="#i-lock"/></svg> Blocca</button></div>
+  </div>
+
+  <!-- Generatore -->
+  <div id="tGen">
+    <div class="card hero-card">
+      <div class="seg" id="gMode">
+        <button data-m="rand" class="on" type="button">Casuale</button>
+        <button data-m="pass" type="button">Frase</button>
+      </div>
+      <div id="gOut" class="out" aria-live="polite"></div>
+      <div class="meter"><i id="gMeter"></i></div>
+      <div class="strrow"><span id="gChip" class="chip"></span><span class="mut" id="gStr"></span></div>
+      <div class="row actions">
+        <button id="gNew" class="pri"><svg class="ic"><use href="#i-refresh"/></svg> Rigenera</button>
+        <button id="gCopy"><svg class="ic"><use href="#i-copy"/></svg> Copia</button>
+        <button id="gSave"><svg class="ic"><use href="#i-shield"/></svg> Salva</button>
+      </div>
+    </div>
+
+    <div class="card" id="oRand">
+      <div class="rng"><label for="gLen" style="margin:0">Lunghezza</label><b id="gLenV">16</b></div>
+      <input id="gLen" type="range" min="8" max="64" step="1" value="16">
+      <div class="opts">
+        <label class="chk"><input type="checkbox" id="gUp"> Maiuscole (A-Z)</label>
+        <label class="chk"><input type="checkbox" id="gLo"> Minuscole (a-z)</label>
+        <label class="chk"><input type="checkbox" id="gDi"> Numeri (0-9)</label>
+        <label class="chk"><input type="checkbox" id="gSy"> Simboli (!@#…)</label>
+        <label class="chk" style="grid-column:1/-1"><input type="checkbox" id="gAm"> Escludi caratteri ambigui (I l 1 O 0 o)</label>
+      </div>
+    </div>
+
+    <div class="card" id="oPass" hidden>
+      <div class="rng"><label for="pWords" style="margin:0">Numero di parole</label><b id="pWordsV">6</b></div>
+      <input id="pWords" type="range" min="4" max="10" step="1" value="6">
+      <label for="pSep">Separatore</label>
+      <select id="pSep">
+        <option value="-">Trattino ( - )</option>
+        <option value=".">Punto ( . )</option>
+        <option value="_">Underscore ( _ )</option>
+        <option value=" ">Spazio</option>
+      </select>
+      <div class="opts" style="margin-top:12px">
+        <label class="chk"><input type="checkbox" id="pCap"> Iniziali maiuscole</label>
+        <label class="chk"><input type="checkbox" id="pNum"> Aggiungi un numero</label>
+      </div>
+      <p class="mut" style="margin-top:8px">Le frasi di parole casuali sono più facili da ricordare e da digitare, con 6 o più parole sono molto robuste.</p>
+    </div>
+  </div>
+
+  <!-- Cassaforte -->
+  <div id="tVault" hidden>
+    <div class="row" style="margin-bottom:12px">
+      <input id="qSearch" class="grow" type="search" placeholder="Cerca per nome, utente o sito…" autocomplete="off">
+      <button id="bAdd" class="pri"><svg class="ic"><use href="#i-plus"/></svg> Nuova</button>
+    </div>
+    <div id="chips" class="chips"></div>
+    <div id="list"></div>
+  </div>
+
+  <!-- Impostazioni -->
+  <div id="tSet" hidden>
+    <div class="card">
+      <h2>Aspetto e sicurezza</h2>
+      <label for="sTheme" style="margin-top:0">Tema</label>
+      <select id="sTheme">
+        <option value="auto">Automatico (come il dispositivo)</option>
+        <option value="dark">Scuro</option>
+        <option value="light">Chiaro</option>
+      </select>
+      <label for="sLock">Blocco automatico dopo inattività</label>
+      <select id="sLock">
+        <option value="1">1 minuto</option>
+        <option value="5">5 minuti</option>
+        <option value="15">15 minuti</option>
+        <option value="0">Mai</option>
+      </select>
+      <label for="sHide">Blocco quando lasci l'app o la scheda</label>
+      <select id="sHide">
+        <option value="0">Subito</option>
+        <option value="30">Dopo 30 secondi</option>
+        <option value="120">Dopo 2 minuti</option>
+        <option value="-1">Mai</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>Cloud e livello di sicurezza</h2>
+      <div id="syncOff">
+        <p class="mut">Sincronizza tutti i tuoi dispositivi tramite un repository <b>privato</b> su GitHub. Nel cloud finisce solo un file cifrato: senza password principale e chiave segreta non è leggibile da nessuno, nemmeno da GitHub.</p>
+        <ol class="steps mut">
+          <li>Su GitHub crea un repository <b>privato</b> (per esempio <code>cassaforte-dati</code>).</li>
+          <li>Crea un token a grana fine: accesso <b>solo a quel repository</b>, permesso <b>Contents: Read and write</b>.</li>
+          <li>Incolla qui sotto repository e token.</li>
+        </ol>
+        <a class="lnk" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Crea il token su GitHub ↗</a>
+        <label for="syRepo">Repository (utente/repository)</label>
+        <input id="syRepo" type="text" autocapitalize="off" spellcheck="false" autocomplete="off" placeholder="nomeutente/cassaforte-dati">
+        <label for="syTok">Token GitHub</label>
+        <input id="syTok" type="password" autocomplete="off" placeholder="github_pat_…">
+        <button class="pri full" id="syConnect" style="margin-top:14px"><svg class="ic"><use href="#i-cloud"/></svg> Collega e sincronizza</button>
+      </div>
+      <div id="syncOn" hidden>
+        <div class="strrow"><span class="chip" id="syChip">Sincronizzato</span><b id="syRepo2"></b></div>
+        <p class="mut" id="syInfo" style="margin-top:8px"></p>
+        <div class="row" style="margin-top:12px"><button id="syNow" class="grow"><svg class="ic"><use href="#i-refresh"/></svg> Sincronizza ora</button><button id="syOff" class="dng grow">Scollega</button></div>
+        <p class="mut" style="margin-top:12px">GitHub conserva ogni versione del file: hai anche la cronologia come backup.</p>
+      </div>
+      <h3>Protezioni attive</h3>
+      <ul class="sec">
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>Cifratura AES-256-GCM</b><span class="mut">Dati cifrati e autenticati; ogni salvataggio usa un valore casuale nuovo e viene riempito per non rivelare quante voci hai.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>PBKDF2-SHA512, 1.000.000 di iterazioni</b><span class="mut">Rende lentissimo ogni tentativo di indovinare la password.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>Chiave segreta a 160 bit</b><span class="mut">Si aggiunge alla password: chi copia il file dal cloud non ha modo di provare a indovinarla.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>Attese dopo i tentativi errati</b><span class="mut">Dal terzo errore l'attesa raddoppia fino a 15 minuti.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>Blocco automatico</b><span class="mut">Per inattività e quando lasci l'app. Le password mostrate si nascondono dopo 15 secondi, gli appunti si svuotano dopo 30.</span></div></li>
+        <li><svg class="ic"><use href="#i-check"/></svg><div><b>Pagina blindata</b><span class="mut">Il browser blocca script estranei e consente solo la connessione a GitHub.</span></div></li>
+      </ul>
+      <button id="bShowSk"><svg class="ic"><use href="#i-key"/></svg> Mostra chiave segreta</button>
+    </div>
+
+    <div class="card">
+      <h2>Sblocco con impronta / Face ID</h2>
+      <p class="mut" id="bioTxt"></p>
+      <button id="bioBtn" style="margin-top:10px"><svg class="ic"><use href="#i-finger"/></svg> <span>Attiva</span></button>
+    </div>
+
+    <div class="card">
+      <h2>Cambia password principale</h2>
+      <form id="fChange" autocomplete="off">
+        <label for="cOld" style="margin-top:0">Password attuale</label>
+        <input id="cOld" type="password" autocomplete="current-password" required>
+        <label for="cNew">Nuova password (minimo 12 caratteri)</label>
+        <input id="cNew" type="password" autocomplete="new-password" required minlength="12">
+        <label for="cNew2">Ripeti nuova password</label>
+        <input id="cNew2" type="password" autocomplete="new-password" required minlength="12">
+        <button class="pri" style="margin-top:14px">Aggiorna password principale</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Backup e trasferimento</h2>
+      <p class="mut">Il backup è un file <b>già cifrato</b>: si apre solo con la password principale con cui è stato creato. Usalo per copiare le password su un altro dispositivo.</p>
+      <div class="row" style="margin-top:12px">
+        <button id="bExp" class="grow"><svg class="ic"><use href="#i-down"/></svg> Esporta</button>
+        <button id="bImp" class="grow"><svg class="ic"><use href="#i-up"/></svg> Importa</button>
+        <input id="fImp" type="file" accept=".json,application/json" hidden>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Installazione e dati</h2>
+      <p class="mut">Le password sono salvate su questo dispositivo, cifrate con AES-256. Con il cloud attivo, una copia <b>cifrata</b> sta nel tuo repository privato su GitHub. Se cancelli i dati del browser perdi la copia locale (non quella nel cloud): <b>fai comunque backup regolari</b>.</p>
+      <button id="bInstall" style="margin-top:10px" hidden><svg class="ic"><use href="#i-down"/></svg> Installa come app</button>
+      <h3>Come averla su ogni dispositivo</h3>
+      <p class="mut"><b>Windows / Mac:</b> apri il file con doppio clic (Chrome, Edge, Firefox, Safari).<br>
+      <b>Android:</b> copia il file sul telefono e aprilo con Chrome.<br>
+      <b>iPhone / iPad:</b> pubblica la cartella su un hosting https (es. GitHub Pages), poi Condividi → “Aggiungi a schermata Home”.<br>
+      Ogni dispositivo ha la propria cassaforte: trasferisci i dati con il backup.</p>
+      <div class="sep"></div>
+      <button id="bWipe" class="dng"><svg class="ic"><use href="#i-trash"/></svg> Elimina tutti i dati da questo dispositivo</button>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="Sezioni">
+    <button data-tab="tGen" class="on"><svg class="ic"><use href="#i-zap"/></svg>Genera</button>
+    <button data-tab="tVault"><svg class="ic"><use href="#i-shield"/></svg>Cassaforte<span class="badge" id="cnt"></span></button>
+    <button data-tab="tSet"><svg class="ic"><use href="#i-sliders"/></svg>Impostazioni</button>
+  </nav>
+</section>
+
+<!-- ============ DIALOG VOCE ============ -->
+<dialog id="dEntry">
+  <form id="fEntry" autocomplete="off">
+    <h2 id="eHead">Nuova voce</h2>
+    <label for="eTitle" style="margin-top:4px">Nome / sito</label>
+    <input id="eTitle" type="text" required maxlength="120" placeholder="es. Gmail">
+    <label for="eUser">Utente / email</label>
+    <input id="eUser" type="text" maxlength="200" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <label for="ePass">Password</label>
+    <div class="row" style="flex-wrap:nowrap">
+      <input id="ePass" class="grow" type="password" required maxlength="500" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="new-password">
+      <button type="button" id="eShow" class="ibtn" aria-label="Mostra o nascondi"><svg class="ic"><use href="#i-eye"/></svg></button>
+      <button type="button" id="eGen" class="ibtn" aria-label="Genera password"><svg class="ic"><use href="#i-refresh"/></svg></button>
+    </div>
+    <div class="meter" style="margin-bottom:0"><i id="eMeter"></i></div>
+    <label for="eUrl">Indirizzo sito (facoltativo)</label>
+    <input id="eUrl" type="text" maxlength="300" autocapitalize="off" spellcheck="false">
+    <label for="eNotes">Note (facoltative: codici di recupero, domande di sicurezza…)</label>
+    <textarea id="eNotes" rows="5" maxlength="10000"></textarea>
+    <label>Allegati</label>
+    <div id="eFiles" class="files"></div>
+    <div class="drop" id="eDrop" tabindex="0" role="button" style="margin-top:8px"><svg class="ic" style="vertical-align:-4px"><use href="#i-clip"/></svg> Aggiungi file o trascinali qui</div>
+    <input id="eFileIn" type="file" multiple hidden>
+    <p class="mut" id="eFileInfo" style="margin-top:6px"></p>
+    <div class="row" style="margin-top:18px;justify-content:flex-end">
+      <button type="button" id="eDel" class="dng" style="margin-right:auto"><svg class="ic"><use href="#i-trash"/></svg></button>
+      <button type="button" id="eCancel">Annulla</button>
+      <button class="pri">Salva</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ DIALOG PASSWORD ============ -->
+<dialog id="dAsk">
+  <form id="fAsk" autocomplete="off">
+    <h2 id="aHead">Password</h2>
+    <p class="mut" id="aText"></p>
+    <input id="aPw" type="password" autocomplete="off" required style="margin-top:8px">
+    <div id="aSkWrap" hidden><label for="aSk">Chiave segreta del backup (vuoto = quella di questo dispositivo)</label><input id="aSk" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+    <div class="row" style="margin-top:18px;justify-content:flex-end">
+      <button type="button" id="aCancel">Annulla</button>
+      <button class="pri">Conferma</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ DIALOG ANTEPRIMA ============ -->
+<dialog id="dPrev">
+  <h2 id="pvName" style="word-break:break-all"></h2>
+  <div class="prevbox"><img id="pvImg" alt="Anteprima allegato"></div>
+  <div class="row" style="justify-content:flex-end"><button type="button" id="pvDl"><svg class="ic"><use href="#i-down"/></svg> Scarica</button><button type="button" id="pvClose" class="pri">Chiudi</button></div>
+</dialog>
+
+<!-- ============ DIALOG CHIAVE SEGRETA ============ -->
+<dialog id="dKey">
+  <h2>La tua Chiave Segreta</h2>
+  <p class="mut">È un codice casuale di 160 bit che si aggiunge alla password principale. Ti servirà per collegare un <b>nuovo dispositivo</b>. Conservala fuori da questo dispositivo (stampata o in un luogo sicuro) e non condividerla.</p>
+  <div class="kbox" id="kVal"></div>
+  <div class="row"><button type="button" id="kCopy" class="grow"><svg class="ic"><use href="#i-copy"/></svg> Copia</button><button type="button" id="kSave" class="grow"><svg class="ic"><use href="#i-down"/></svg> Scarica kit</button></div>
+  <label class="chk" id="kOkWrap" style="margin-top:14px"><input type="checkbox" id="kOk"> L'ho salvata in un posto sicuro</label>
+  <div class="row" style="margin-top:16px;justify-content:flex-end"><button type="button" id="kDone" class="pri">Continua</button></div>
+</dialog>
+
+<!-- ============ DIALOG COLLEGA CLOUD ============ -->
+<dialog id="dLink">
+  <form id="fLink" autocomplete="off">
+    <h2>Collega a una cassaforte nel cloud</h2>
+    <p class="mut">Usa gli stessi dati del primo dispositivo. GitHub conserva solo il file cifrato.</p>
+    <label for="lRepo">Repository dei dati (utente/repository)</label>
+    <input id="lRepo" type="text" autocapitalize="off" spellcheck="false" required>
+    <label for="lTok">Token GitHub</label>
+    <input id="lTok" type="password" autocomplete="off" required>
+    <label for="lSk">Chiave segreta</label>
+    <input id="lSk" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required placeholder="XXXX-XXXX-XXXX-…">
+    <label for="lPw">Password principale</label>
+    <input id="lPw" type="password" autocomplete="off" required>
+    <p id="lErr" class="err" style="margin-top:10px"></p>
+    <div class="row" style="margin-top:8px;justify-content:flex-end"><button type="button" id="lCancel">Annulla</button><button class="pri" id="lGo">Collega</button></div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+'use strict';
+/* ---------- utilità ---------- */
+const VKEY='cassaforte.vault.v1', SKEY='cassaforte.settings.v1', BKEY='cassaforte.bio.v1', SKKEY='cassaforte.sk.v1', FKEY='cassaforte.fail.v1';
+const ITER=1000000, NS='http://www.w3.org/2000/svg';
+const enc=new TextEncoder(), dec=new TextDecoder();
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+function h(tag,props={},...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(props)){if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else if(k==='text')e.textContent=v;else e.setAttribute(k,v)}for(const c of kids.flat())if(c!=null)e.append(c);return e}
+function ic(n){const s=document.createElementNS(NS,'svg');s.setAttribute('class','ic');const u=document.createElementNS(NS,'use');u.setAttribute('href','#i-'+n);s.append(u);return s}
+function b64(buf){const a=new Uint8Array(buf);let s='';for(let i=0;i<a.length;i+=0x8000)s+=String.fromCharCode.apply(null,a.subarray(i,i+0x8000));return btoa(s)}
+function unb64(s){const bin=atob(s),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return a}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2600)}
+function uid(){const a=crypto.getRandomValues(new Uint8Array(9));return Date.now().toString(36)+b64(a).replace(/[^a-z0-9]/gi,'')}
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- impostazioni (non sensibili) ---------- */
+const DEF={mode:'rand',len:16,up:true,lo:true,di:true,sy:true,am:false,words:6,sep:'-',cap:true,num:true,lock:5,hide:30,theme:'auto'};
+let S={...DEF};
+try{S={...DEF,...JSON.parse(localStorage.getItem(SKEY)||'{}')}}catch(e){}
+function saveS(){try{localStorage.setItem(SKEY,JSON.stringify(S))}catch(e){}}
+function applyTheme(){document.documentElement.dataset.theme=S.theme}
+applyTheme();
+
+/* ---------- crittografia ---------- */
+const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+function skEncode(b){let bits=0,val=0,out='';for(const x of b){val=(val<<8)|x;bits+=8;while(bits>=5){out+=B32[(val>>>(bits-5))&31];bits-=5}val&=(1<<bits)-1}return out}
+function skDecode(s){s=String(s).toUpperCase().replace(/O/g,'0').replace(/[IL]/g,'1').replace(/[^0-9A-Z]/g,'');if(s.length!==32)return null;let bits=0,val=0;const out=[];for(const c of s){const i=B32.indexOf(c);if(i<0)return null;val=(val<<5)|i;bits+=5;if(bits>=8){out.push((val>>>(bits-8))&255);bits-=8;val&=(1<<bits)-1}}return new Uint8Array(out)}
+function skFormat(b){return skEncode(b).match(/.{4}/g).join('-')}
+function cat(a,b){const o=new Uint8Array(a.length+b.length);o.set(a);o.set(b,a.length);return o}
+const aad=(iter,salt)=>enc.encode('cassaforte|v2|'+iter+'|'+salt);
+
+/* password (PBKDF2-SHA512) + chiave segreta (160 bit) -> chiave AES-256 via HKDF */
+async function deriveKey(pw,salt,iter,sk){
+  const m=await crypto.subtle.importKey('raw',enc.encode(String(pw).normalize('NFKC')),'PBKDF2',false,['deriveBits']);
+  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:iter,hash:'SHA-512'},m,512));
+  const hk=await crypto.subtle.importKey('raw',cat(bits,sk),'HKDF',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'HKDF',hash:'SHA-256',salt,info:enc.encode('cassaforte v2 aes-gcm')},hk,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+/* compatibilità con la prima versione (solo per migrare) */
+async function legacyKey(pw,salt,iter){
+  const m=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['decrypt']);
+}
+async function openLegacy(key,blob){
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(blob.iv)},key,unb64(blob.data));
+  return JSON.parse(dec.decode(pt));
+}
+/* il contenuto viene riempito fino a multipli di 4 KB: nasconde quante voci hai */
+function packPayload(o){
+  const base=enc.encode(JSON.stringify({...o,p:''})).length;
+  const t=Math.ceil((base+1)/4096)*4096;
+  return enc.encode(JSON.stringify({...o,p:'x'.repeat(t-base)}));
+}
+async function seal(key,obj,iter,salt){
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:aad(iter,salt)},key,packPayload(obj));
+  return{iv:b64(iv),data:b64(ct)};
+}
+async function openBlob(key,blob){
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(blob.iv),additionalData:aad(blob.iter,blob.salt)},key,unb64(blob.data));
+  return JSON.parse(dec.decode(pt));
+}
+function getSK(){try{const s=localStorage.getItem(SKKEY);return s?unb64(s):null}catch(e){return null}}
+function setSK(b){localStorage.setItem(SKKEY,b64(b))}
+function delSK(){try{localStorage.removeItem(SKKEY)}catch(e){}}
+function needSk(){try{const b=JSON.parse(localStorage.getItem(VKEY)||'null');return !!b&&b.v===2&&!getSK()}catch(e){return false}}
+
+/* ---------- tentativi errati ---------- */
+function failState(){try{return JSON.parse(localStorage.getItem(FKEY))||{n:0,until:0}}catch(e){return{n:0,until:0}}}
+function failSet(s){try{localStorage.setItem(FKEY,JSON.stringify(s))}catch(e){}}
+function failDelay(n){return n<3?0:Math.min(900,15*Math.pow(2,n-3))}
+
+/* ---------- cassaforte ---------- */
+let V=null; // {key,salt,iter,entries,dels,sync}
+function sanitize(e){const now=Date.now();return{id:String(e.id),title:String(e.title).slice(0,120),user:String(e.user||'').slice(0,200),pass:String(e.pass).slice(0,500),url:String(e.url||'').slice(0,300),notes:String(e.notes||'').slice(0,10000),files:cleanFiles(e.files),created:+e.created||now,updated:+e.updated||now}}
+async function persist(skipSync){
+  const s=await seal(V.key,{e:V.entries,d:V.dels,s:V.sync,x:V.x},V.iter,V.salt);
+  try{localStorage.setItem(VKEY,JSON.stringify({v:2,iter:V.iter,salt:V.salt,iv:s.iv,data:s.data,saved:Date.now()}))}
+  catch(e){toast('Errore di salvataggio: spazio o permessi del browser');throw e}
+  if(!skipSync)scheduleSync();
+}
+async function createVault(pw,entries,dels){
+  const salt=crypto.getRandomValues(new Uint8Array(16)),sk=crypto.getRandomValues(new Uint8Array(20));
+  const prevSK=getSK();
+  V={key:await deriveKey(pw,salt,ITER,sk),salt:b64(salt),iter:ITER,entries:entries||[],dels:dels||{},sync:null,x:[]};
+  setSK(sk);
+  try{await persist(true)}catch(e){prevSK?setSK(prevSK):delSK();throw e}
+  return skFormat(sk);
+}
+async function unlockVault(pw){
+  const blob=JSON.parse(localStorage.getItem(VKEY));
+  if(blob.v===1){
+    const entries=await openLegacy(await legacyKey(pw,unb64(blob.salt),blob.iter),blob);
+    return{sk:await createVault(pw,entries)};
+  }
+  const sk=getSK();if(!sk)throw new Error('sk');
+  const key=await deriveKey(pw,unb64(blob.salt),blob.iter,sk);
+  const o=await openBlob(key,blob);
+  V={key,salt:blob.salt,iter:blob.iter,entries:o.e||[],dels:o.d||{},sync:o.s||null,x:Array.isArray(o.x)?o.x:[]};
+  return{};
+}
+async function verifyMaster(pw){
+  try{const b=JSON.parse(localStorage.getItem(VKEY));const sk=getSK();if(!sk)return false;await openBlob(await deriveKey(pw,unb64(b.salt),b.iter,sk),b);return true}catch(e){return false}
+}
+async function reauth(head,text){
+  const r=await askPassword(head,text);if(!r)return false;
+  if(!await verifyMaster(r.pw)){toast('Password errata');return false}
+  return true;
+}
+function validBlob(b){return b&&(b.v===1||b.v===2)&&Number.isInteger(b.iter)&&b.iter>=100000&&b.iter<=5000000&&typeof b.salt==='string'&&typeof b.iv==='string'&&typeof b.data==='string'}
+async function buildBlob(){
+  const s=await seal(V.key,{e:V.entries,d:V.dels},V.iter,V.salt);
+  return{app:'cassaforte',v:2,kdf:'PBKDF2-SHA512+HKDF-SHA256',iter:V.iter,salt:V.salt,iv:s.iv,data:s.data,updated:Date.now()};
+}
+/* unione di due elenchi: vince la modifica più recente; le eliminazioni si propagano */
+function mergeIn(re,rd){
+  let ch=false;
+  for(const[id,ts] of Object.entries(rd||{})){if((V.dels[id]||0)<ts){V.dels[id]=ts;ch=true}}
+  const byId=new Map(V.entries.map(e=>[e.id,e]));
+  for(const e of re||[]){
+    if(!e||typeof e.id!=='string'||typeof e.title!=='string'||typeof e.pass!=='string'||!e.title)continue;
+    const l=byId.get(e.id);
+    if(!l){if((V.dels[e.id]||0)>=(+e.updated||0))continue;const n=sanitize(e);V.entries.push(n);byId.set(n.id,n);ch=true}
+    else if((+e.updated||0)>(l.updated||0)){Object.assign(l,sanitize(e));ch=true}
+  }
+  const before=V.entries.length;
+  V.entries=V.entries.filter(e=>!((V.dels[e.id]||0)>=(e.updated||0)));
+  if(V.entries.length!==before)ch=true;
+  return ch;
+}
+function sig(e,d){return e.map(x=>x.id+':'+(x.updated||0)).sort().join('|')+'#'+Object.entries(d).map(([k,v])=>k+':'+v).sort().join('|')}
+
+/* ---------- cloud: repository privato GitHub, solo dati cifrati ---------- */
+function SyncError(msg,code){const e=new Error(msg);e.code=code;e.user=true;return e}
+function parseRepo(s){
+  s=String(s||'').trim().replace(/^https?:\/\/github\.com\//i,'').replace(/\.git$/,'').replace(/\/+$/,'');
+  const m=s.match(/^([A-Za-z0-9][A-Za-z0-9-]{0,38})\/([A-Za-z0-9._-]{1,100})$/);
+  return m?{owner:m[1],repo:m[2]}:null;
+}
+async function ghFetch(cfg,method,path,body,accept){
+  let r;
+  try{
+    r=await fetch('https://api.github.com/repos/'+encodeURIComponent(cfg.owner)+'/'+encodeURIComponent(cfg.repo)+path,{
+      method,cache:'no-store',
+      headers:{'Authorization':'Bearer '+cfg.token,'Accept':accept||'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(body?{'Content-Type':'application/json'}:{})},
+      body:body?JSON.stringify(body):undefined});
+  }catch(e){throw SyncError('Rete non raggiungibile','net')}
+  if(r.status===401)throw SyncError('Token non valido o scaduto','auth');
+  if(r.status===403||r.status===429)throw SyncError('GitHub ha rifiutato la richiesta: controlla i permessi del token (Contents: Read and write)','forbidden');
+  return r;
+}
+async function verifyRepo(cfg){
+  const r=await ghFetch(cfg,'GET','');
+  if(r.status===404)throw SyncError('Repository non trovato, oppure il token non ha accesso a quel repository','404');
+  if(!r.ok)throw SyncError('GitHub ha risposto '+r.status,'http');
+  const j=await r.json();
+  if(j.private!==true)throw SyncError('Il repository è pubblico: usa un repository PRIVATO per i tuoi dati','public');
+}
+async function pullRemote(cfg){
+  const r=await ghFetch(cfg,'GET','/contents/vault.json');
+  if(r.status===404)return{missing:true};
+  if(!r.ok)throw SyncError('GitHub ha risposto '+r.status,'http');
+  const j=await r.json();let text;
+  if(j.content&&j.encoding==='base64')text=dec.decode(unb64(j.content.replace(/\s/g,'')));
+  else{const rr=await ghFetch(cfg,'GET','/contents/vault.json',null,'application/vnd.github.raw+json');if(!rr.ok)throw SyncError('Lettura non riuscita','http');text=await rr.text()}
+  let blob;try{blob=JSON.parse(text)}catch(e){throw SyncError('Il file nel cloud non è valido','bad')}
+  if(!validBlob(blob)||blob.v!==2)throw SyncError('Il file nel cloud non è valido','bad');
+  return{sha:j.sha,blob};
+}
+async function pushRemote(cfg,blob,sha){
+  const body={message:'sync '+new Date().toISOString(),content:btoa(JSON.stringify(blob))};
+  if(sha)body.sha=sha;
+  return ghFetch(cfg,'PUT','/contents/vault.json',body);
+}
+
+let syncing=false,dirty=false,syncT=null;
+function setSyncUI(st,msg){
+  const b=$('#bSync');
+  b.hidden=!(V&&V.sync);
+  b.className='ibtn '+st+(st==='busy'?' spin':'');
+  b.title={ok:'Sincronizzato',busy:'Sincronizzazione…',err:msg||'Errore di sincronizzazione',offline:'Offline: sincronizzo appena torni online'}[st]||'';
+  const chip=$('#syChip'),info=$('#syInfo');
+  chip.className='chip '+(st==='ok'?'ok':st==='err'?'bad':'warn');
+  chip.textContent={ok:'Sincronizzato',busy:'Sincronizzazione…',err:'Errore',offline:'Offline'}[st]||'';
+  info.textContent=st==='err'?(msg||''):(V&&V.sync&&V.sync.last?'Ultimo aggiornamento: '+new Date(V.sync.last).toLocaleString('it-IT'):'');
+}
+function refreshSyncUI(){
+  const on=!!(V&&V.sync);
+  $('#syncOff').hidden=on;$('#syncOn').hidden=!on;
+  if(on)$('#syRepo2').textContent=V.sync.owner+'/'+V.sync.repo;
+  setSyncUI(on&&!navigator.onLine?'offline':'ok');
+}
+function scheduleSync(){if(!V||!V.sync)return;clearTimeout(syncT);syncT=setTimeout(()=>syncNow(),2500)}
+async function syncNow(){
+  if(!V||!V.sync)return false;
+  if(syncing){dirty=true;return false}
+  if(!navigator.onLine){setSyncUI('offline');return false}
+  syncing=true;dirty=false;setSyncUI('busy');
+  let ok=false;
+  try{
+    for(let i=0;i<4&&!ok;i++){
+      const rem=await pullRemote(V.sync);
+      const force=!!V.sync.replace;
+      let remSig=null,changed=false;
+      if(!rem.missing&&!force){
+        const b=rem.blob;
+        if(b.salt!==V.salt||b.iter!==V.iter)throw SyncError('Nel cloud c\'è una versione cifrata con un\'altra password principale','key');
+        let o;try{o=await openBlob(V.key,b)}catch(e){throw SyncError('I dati nel cloud non si decifrano: non li sovrascrivo','decrypt')}
+        remSig=sig(o.e||[],o.d||{});changed=mergeIn(o.e||[],o.d||{});
+      }
+      await syncFiles();
+      if(rem.missing||force||remSig!==sig(V.entries,V.dels)){
+        const r=await pushRemote(V.sync,await buildBlob(),rem.sha);
+        if(r.status===409||r.status===422)continue;
+        if(!r.ok)throw SyncError('Scrittura nel cloud non riuscita ('+r.status+')','http');
+      }
+      delete V.sync.replace;V.sync.last=Date.now();ok=true;
+      await persist(true);
+      if(changed&&!$('#tVault').hidden)renderList();
+    }
+    if(!ok)throw SyncError('Conflitto ripetuto: riprova tra poco','conflict');
+    setSyncUI('ok');
+  }catch(e){
+    if(V){
+      if(e.code==='net'||!navigator.onLine)setSyncUI('offline');
+      else{setSyncUI('err',e.user?e.message:'Errore di sincronizzazione');if(e.code==='key')offerAdopt()}
+    }
+  }finally{syncing=false;if(dirty&&V&&V.sync)scheduleSync()}
+  return ok;
+}
+let adopting=false;
+async function offerAdopt(){
+  if(adopting||!V)return;adopting=true;
+  try{
+    const r=await askPassword('Password principale cambiata','La cassaforte nel cloud è stata cifrata con una nuova password principale (cambiata da un altro dispositivo). Inserisci la nuova password per aggiornare questo dispositivo.');
+    if(!r)return;
+    const rem=await pullRemote(V.sync);if(rem.missing)return;
+    const b=rem.blob;
+    const key=await deriveKey(r.pw,unb64(b.salt),b.iter,getSK());
+    let o;try{o=await openBlob(key,b)}catch(e){toast('Password errata');return}
+    V.key=key;V.salt=b.salt;V.iter=b.iter;mergeIn(o.e||[],o.d||{});
+    await persist(true);bioDisable();refreshBioUI();renderList();toast('Dispositivo aggiornato');
+    syncNow();
+  }catch(e){toast('Aggiornamento non riuscito')}finally{adopting=false}
+}
+
+/* ---------- allegati: cifrati uno per uno, mai in chiaro su disco o nel cloud ---------- */
+const DBN='cassaforte-files', MAXB=10*1024*1024, MAXF=10;
+let dbp=null;
+function dbOpen(){
+  return dbp||(dbp=new Promise((res,rej)=>{
+    const r=indexedDB.open(DBN,1);
+    r.onupgradeneeded=()=>r.result.createObjectStore('blobs',{keyPath:'id'});
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>{dbp=null;rej(r.error)};
+    r.onblocked=()=>{dbp=null;rej(new Error('blocked'))};
+  }));
+}
+function dbTx(mode,fn){
+  return dbOpen().then(db=>new Promise((res,rej)=>{
+    const t=db.transaction('blobs',mode),s=t.objectStore('blobs');let out;
+    const q=fn(s);if(q)q.onsuccess=()=>{out=q.result};
+    t.oncomplete=()=>res(out);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error);
+  }));
+}
+const dbPut=rec=>dbTx('readwrite',s=>s.put(rec));
+const dbGet=id=>dbTx('readonly',s=>s.get(id));
+const dbDel=id=>dbTx('readwrite',s=>s.delete(id));
+const dbKeys=()=>dbTx('readonly',s=>s.getAllKeys());
+async function dbWipe(){try{if(dbp){(await dbp).close();dbp=null}}catch(e){}try{indexedDB.deleteDatabase(DBN)}catch(e){}}
+
+function cleanName(n){return String(n||'').replace(/[\\/:*?"<>|\u0000-\u001f]/g,'_').slice(0,200)||'file'}
+function cleanFiles(a){
+  return Array.isArray(a)?a.filter(f=>f&&typeof f.id==='string'&&typeof f.name==='string'&&typeof f.k==='string'&&/^[A-Za-z0-9_-]{6,40}$/.test(f.id)).slice(0,20)
+    .map(f=>({id:f.id,name:cleanName(f.name),type:String(f.type||'').slice(0,100),size:+f.size||0,k:f.k,added:+f.added||0})):[];
+}
+function fmtSize(n){return n<1024?n+' B':n<1048576?(n/1024).toFixed(n<10240?1:0)+' KB':(n/1048576).toFixed(1)+' MB'}
+function extOf(n){const m=/\.([A-Za-z0-9]{1,4})$/.exec(n);return m?m[1]:'file'}
+async function encFile(id,kraw,bytes){
+  const key=await crypto.subtle.importKey('raw',kraw,'AES-GCM',false,['encrypt']);
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:enc.encode('cassaforte|file|'+id)},key,bytes));
+  return cat(iv,ct);
+}
+async function decFile(meta,buf){
+  const key=await crypto.subtle.importKey('raw',unb64(meta.k),'AES-GCM',false,['decrypt']);
+  return crypto.subtle.decrypt({name:'AES-GCM',iv:buf.slice(0,12),additionalData:enc.encode('cassaforte|file|'+meta.id)},key,buf.slice(12));
+}
+
+/* ---------- allegati nella finestra della voce ---------- */
+let stage=null;const pendingIds=new Set();
+function stageInit(e){stage={files:(e&&e.files?e.files:[]).map(f=>({...f})),fresh:new Map(),orig:new Set((e&&e.files||[]).map(f=>f.id))};renderStage()}
+function fileRow(m,actions){
+  return h('div',{class:'fitem'},h('div',{class:'ficon',text:extOf(m.name)}),
+    h('div',{class:'fi'},h('div',{class:'fn',text:m.name}),h('div',{class:'fs',text:fmtSize(m.size)+(m.type?' · '+m.type:'')})),actions);
+}
+function renderStage(){
+  const box=$('#eFiles');box.replaceChildren();
+  if(!stage)return;
+  for(const m of stage.files){
+    const acts=h('div',{class:'row',style:'flex-wrap:nowrap;gap:6px'});
+    if(!stage.fresh.has(m.id))acts.append(h('button',{type:'button',class:'sm',onclick:()=>downloadFile(m),'aria-label':'Scarica'},ic('down')));
+    acts.append(h('button',{type:'button',class:'sm dng',onclick:()=>stageRemove(m.id),'aria-label':'Rimuovi'},ic('trash')));
+    box.append(fileRow(m,acts));
+  }
+  $('#eFileInfo').textContent=stage.files.length?`${stage.files.length}/${MAXF} allegati · cifrati prima del salvataggio`:'Immagini, PDF, documenti, archivi… qualsiasi formato, fino a 10 MB ciascuno.';
+}
+async function stageAdd(files){
+  if(!stage)return;
+  for(const f of files){
+    if(stage.files.length>=MAXF){toast('Massimo '+MAXF+' allegati per voce');break}
+    if(f.size>MAXB){toast('«'+f.name+'» supera i 10 MB');continue}
+    try{
+      const bytes=new Uint8Array(await f.arrayBuffer());
+      const id=uid(),kraw=crypto.getRandomValues(new Uint8Array(32));
+      stage.fresh.set(id,await encFile(id,kraw,bytes));
+      stage.files.push({id,name:cleanName(f.name),type:String(f.type||'').slice(0,100),size:f.size,k:b64(kraw),added:Date.now()});
+    }catch(e){toast('Impossibile leggere «'+f.name+'»')}
+  }
+  renderStage();
+}
+function stageRemove(id){if(!stage)return;stage.files=stage.files.filter(f=>f.id!==id);stage.fresh.delete(id);renderStage()}
+async function stageCommit(){
+  const removed=[...stage.orig].filter(id=>!stage.files.some(f=>f.id===id));
+  for(const[id,buf] of stage.fresh){
+    if(!stage.files.some(f=>f.id===id))continue;
+    pendingIds.add(id);
+    await dbPut({id,buf:buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength),up:false});
+  }
+  return{files:stage.files.map(f=>({...f})),removed};
+}
+function stageDone(){pendingIds.clear();stage=null;gcFiles()}
+$('#eDrop').addEventListener('click',()=>$('#eFileIn').click());
+$('#eDrop').addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();$('#eFileIn').click()}});
+$('#eFileIn').addEventListener('change',ev=>{const f=[...ev.target.files];ev.target.value='';stageAdd(f)});
+['dragenter','dragover'].forEach(t=>$('#eDrop').addEventListener(t,ev=>{ev.preventDefault();$('#eDrop').classList.add('on')}));
+['dragleave','drop'].forEach(t=>$('#eDrop').addEventListener(t,ev=>{ev.preventDefault();$('#eDrop').classList.remove('on')}));
+$('#eDrop').addEventListener('drop',ev=>stageAdd([...ev.dataTransfer.files]));
+$('#dEntry').addEventListener('close',()=>{stage=null});
+
+/* ---------- allegati nell'elenco ---------- */
+const IMG_OK=/^image\/(png|jpeg|gif|webp|bmp|avif|svg\+xml)$/;
+function attLabel(e){
+  const n=(e.files||[]).length;
+  return 'Contiene: '+[e.notes?'note':null,n?n+(n===1?' allegato':' allegati'):null].filter(Boolean).join(' · ')+' (premi Mostra)';
+}
+function filesBlock(e){
+  const box=h('div',{class:'files'});
+  for(const m of e.files){
+    const acts=h('div',{class:'row',style:'flex-wrap:nowrap;gap:6px'});
+    if(IMG_OK.test(m.type))acts.append(h('button',{class:'sm',onclick:()=>previewFile(m)},ic('eye'),'Anteprima'));
+    acts.append(h('button',{class:'sm',onclick:()=>downloadFile(m)},ic('down'),'Scarica'));
+    box.append(fileRow(m,acts));
+  }
+  return box;
+}
+async function fetchBlobRemote(id){
+  const r=await ghFetch(V.sync,'GET','/contents/files/'+id+'.bin',null,'application/vnd.github.raw+json');
+  if(r.status===404)throw SyncError('Allegato non più presente nel cloud','404');
+  if(!r.ok)throw SyncError('Lettura dell\'allegato non riuscita ('+r.status+')','http');
+  return r.arrayBuffer();
+}
+async function loadFile(meta){
+  let rec=null;try{rec=await dbGet(meta.id)}catch(e){}
+  if(!rec){
+    if(!V.sync)throw SyncError('Questo allegato non è presente su questo dispositivo','local');
+    toast('Scarico l\'allegato dal cloud…');
+    rec={id:meta.id,buf:await fetchBlobRemote(meta.id),up:true};
+    try{await dbPut(rec)}catch(e){}
+  }
+  try{return await decFile(meta,new Uint8Array(rec.buf))}
+  catch(e){throw SyncError('Allegato danneggiato o non decifrabile','dec')}
+}
+async function downloadFile(meta){
+  try{
+    const pt=await loadFile(meta);
+    const url=URL.createObjectURL(new Blob([pt],{type:'application/octet-stream'}));
+    const a=h('a',{href:url,download:meta.name});document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }catch(e){toast(e.user?e.message:'Impossibile aprire l\'allegato')}
+}
+let pvUrl=null;
+async function previewFile(meta){
+  try{
+    const pt=await loadFile(meta);
+    if(pvUrl)URL.revokeObjectURL(pvUrl);
+    pvUrl=URL.createObjectURL(new Blob([pt],{type:meta.type}));
+    $('#pvImg').src=pvUrl;$('#pvName').textContent=meta.name;$('#pvDl').onclick=()=>downloadFile(meta);
+    $('#dPrev').showModal();
+  }catch(e){toast(e.user?e.message:'Impossibile aprire l\'anteprima')}
+}
+$('#pvClose').addEventListener('click',()=>$('#dPrev').close());
+$('#dPrev').addEventListener('close',()=>{$('#pvImg').removeAttribute('src');if(pvUrl){URL.revokeObjectURL(pvUrl);pvUrl=null}});
+
+/* ---------- pulizia e sincronizzazione degli allegati ---------- */
+async function gcFiles(){
+  if(!V)return;
+  try{
+    const ref=new Set();V.entries.forEach(e=>(e.files||[]).forEach(f=>ref.add(f.id)));
+    for(const id of await dbKeys())if(!ref.has(id)&&!pendingIds.has(id))await dbDel(id);
+    if(!V.sync&&V.x&&V.x.length){V.x=[];await persist(true)}
+  }catch(e){}
+}
+async function syncFiles(){
+  if(!V||!V.sync)return;
+  const cfg=V.sync,ref=new Map();
+  V.entries.forEach(e=>(e.files||[]).forEach(f=>ref.set(f.id,f)));
+  let keys=[];try{keys=await dbKeys()}catch(e){}
+  for(const id of keys){
+    if(!ref.has(id))continue;
+    const rec=await dbGet(id);if(!rec||rec.up)continue;
+    const r=await ghFetch(cfg,'PUT','/contents/files/'+id+'.bin',{message:'file',content:b64(rec.buf)});
+    if(!(r.ok||r.status===422))throw SyncError('Caricamento di un allegato non riuscito ('+r.status+')','http');
+    rec.up=true;await dbPut(rec);
+  }
+  if(V.x&&V.x.length){
+    const keep=[];
+    for(const id of V.x){
+      if(ref.has(id)||!/^[A-Za-z0-9_-]{6,40}$/.test(id))continue;
+      const g=await ghFetch(cfg,'GET','/contents/files/'+id+'.bin');
+      if(g.status===404)continue;
+      if(!g.ok){keep.push(id);continue}
+      const j=await g.json();
+      const d=await ghFetch(cfg,'DELETE','/contents/files/'+id+'.bin',{message:'rm',sha:j.sha});
+      if(!d.ok&&d.status!==404)keep.push(id);
+    }
+    V.x=keep;
+  }
+}
+/* backup con allegati (già cifrati) */
+async function exportFiles(){
+  const map={};let missing=0;
+  for(const e of V.entries)for(const m of e.files||[]){
+    let rec=null;try{rec=await dbGet(m.id)}catch(x){}
+    let buf=rec&&rec.buf;
+    if(!buf&&V.sync){try{buf=await fetchBlobRemote(m.id)}catch(x){}}
+    if(buf)map[m.id]=b64(buf);else missing++;
+  }
+  if(missing)toast(missing+(missing===1?' allegato non incluso':' allegati non inclusi')+' (non disponibili su questo dispositivo)');
+  return map;
+}
+async function importFiles(map,list){
+  if(!map||typeof map!=='object')return;
+  for(const e of list||[])for(const m of cleanFiles(e&&e.files)){
+    if(typeof map[m.id]!=='string')continue;
+    let have=null;try{have=await dbGet(m.id)}catch(x){}
+    if(have)continue;
+    pendingIds.add(m.id);
+    try{await dbPut({id:m.id,buf:unb64(map[m.id]).buffer,up:false})}catch(x){}
+  }
+}
+
+/* ---------- generatore ---------- */
+const SETS={lo:'abcdefghijklmnopqrstuvwxyz',up:'ABCDEFGHIJKLMNOPQRSTUVWXYZ',di:'0123456789',sy:'!@#$%^&*()-_=+[]{};:,.?/~'};
+const WORDS=[...new Set(`albero amico anello aquila arancia argento aria autunno azzurro bacio balena barca basso bello bianco bosco braccio bronzo cammino campo candela cane carta casa castello cavallo cielo cigno cinque citta colle collina corda corona corsa cuore dado delfino dente diamante dolce domani donna drago erba estate faro felice fiore fiume foglia fonte forte fresco fumo gatto gelato gioco giardino giorno grano grande grotta isola lago lampo latte legno leone letto libero libro luce luna lupo madre mano mare marmo mela miele monte mondo mulino nave nebbia neve nido notte nuvola oasi occhio oceano onda opera orso ospite pace palma pane parco passo penna pesce pietra pino pioggia pista pittore ponte porta prato primo pugno quadro quercia radice rana regno remo rosa rosso ruota sabbia sale salto sasso scala scudo sedia segreto sera serpe sole sorriso spada spiaggia stella strada suono tavolo tempo terra tigre torre tramonto treno uccello uovo uva valle vela vento verde vetro viaggio vigna vino viola vita volo zaffiro zebra zucchero acqua alba albicocca anatra angelo ape arco armadio asino aurora ballo bambino banco barba bastone biscotto blu bocca bolla borsa botte bottone bruco burro cacao caffe calma cammello campana canale canto capra carota cassa catena cavolo cena cerchio cesto chiave cima circo cocco colore cometa conchiglia cucina cuscino danza deserto dorato dritto duna elmo falco farfalla felpa ferro festa fiamma fico filo fine fiocco fischio fragola frutto fucina gamba gelso ghiaccio giallo gigante gomma gonna gufo ieri insalata isolotto lancia lente lepre lima limone linea lontano lucciola maglia mantello marea mattino medusa melone mente mirto moneta mosca nocciola nodo nome nord nove ombra orchidea orologio ortica osso ovest padella pagina palla panda pantera pappagallo pasta pecora pepe perla piano piuma polvere pomo prugna pulce quarzo rame ramo razzo riso riva roccia rondine sapone scimmia sentiero seme seta sirena sogno sorgente sud talpa tazza tela tenda tetto timone topo tulipano turchese ulivo unico vaso velluto verso volpe zattera zenzero zolla`.split(/\s+/).filter(Boolean))];
+function rnd(n){const lim=Math.floor(0x100000000/n)*n,a=new Uint32Array(1);do{crypto.getRandomValues(a)}while(a[0]>=lim);return a[0]%n}
+function genPassword(o){
+  const pools=[];
+  for(const k of ['up','lo','di','sy']){if(!o[k])continue;let p=SETS[k];if(o.am)p=p.replace(/[Il1O0o]/g,'');if(p)pools.push(p)}
+  if(!pools.length)return{pw:'',bits:0};
+  const all=pools.join('');
+  const chars=pools.map(p=>p[rnd(p.length)]);
+  while(chars.length<o.len)chars.push(all[rnd(all.length)]);
+  for(let i=chars.length-1;i>0;i--){const j=rnd(i+1);[chars[i],chars[j]]=[chars[j],chars[i]]}
+  return{pw:chars.join(''),bits:o.len*Math.log2(all.length)};
+}
+function genPhrase(o){
+  const w=[];
+  for(let i=0;i<o.words;i++){let x=WORDS[rnd(WORDS.length)];if(o.cap)x=x[0].toUpperCase()+x.slice(1);w.push(x)}
+  let bits=o.words*Math.log2(WORDS.length);
+  if(o.num){w.push(String(10+rnd(90)));bits+=Math.log2(90)}
+  return{pw:w.join(o.sep),bits};
+}
+function estBits(pw){
+  const pool=(/[a-z]/.test(pw)?26:0)+(/[A-Z]/.test(pw)?26:0)+(/\d/.test(pw)?10:0)+(/[^A-Za-z0-9]/.test(pw)?32:0);
+  return pool?pw.length*Math.log2(pool):0;
+}
+function strength(bits){
+  if(bits<=0)return{t:'—',k:'bad',c:'var(--bad)',w:0};
+  if(bits<45)return{t:'Debole',k:'bad',c:'var(--bad)',w:25};
+  if(bits<65)return{t:'Media',k:'warn',c:'var(--warn)',w:50};
+  if(bits<90)return{t:'Buona',k:'ok',c:'var(--ok)',w:75};
+  return{t:'Eccellente',k:'ok',c:'var(--ok)',w:100};
+}
+function colorize(pw){
+  const f=document.createDocumentFragment();
+  for(const ch of pw){const cls=/\d/.test(ch)?'c-d':/[A-Za-z]/.test(ch)?'':'c-s';f.append(h('span',cls?{class:cls,text:ch}:{text:ch}))}
+  return f;
+}
+function paintMeter(el,bits){const st=strength(bits);el.style.width=st.w+'%';el.style.background=st.c;el.style.boxShadow=st.w?`0 0 14px ${st.c}`:'none';return st}
+function paintRange(el){const p=(el.value-el.min)/(el.max-el.min)*100;el.style.setProperty('--p',p+'%')}
+
+let cur='',scr=null;
+function showOut(pw,animate){
+  clearInterval(scr);const o=$('#gOut');
+  const fin=()=>{o.replaceChildren(colorize(pw)||'')};
+  if(!animate||reduced()||!pw){fin();if(!pw)o.textContent='—';return}
+  let n=0;const pool='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
+  scr=setInterval(()=>{n++;if(n>=9){clearInterval(scr);fin();return}let s='';for(let i=0;i<pw.length;i++)s+=pool[Math.floor(Math.random()*pool.length)];o.textContent=s},32);
+}
+function regen(animate){
+  const g=S.mode==='pass'?genPhrase(S):genPassword(S);
+  cur=g.pw;showOut(g.pw,animate);
+  const st=paintMeter($('#gMeter'),g.bits);
+  const chip=$('#gChip');chip.className='chip '+st.k;chip.textContent=g.pw?st.t:'Seleziona almeno un tipo di carattere';
+  $('#gStr').textContent=g.pw?`circa ${Math.round(g.bits)} bit di entropia`:'';
+  $('#gCopy').disabled=$('#gSave').disabled=!g.pw;
+}
+function syncGenUI(){
+  $('#gLen').value=S.len;$('#gLenV').textContent=S.len;paintRange($('#gLen'));
+  $('#gUp').checked=S.up;$('#gLo').checked=S.lo;$('#gDi').checked=S.di;$('#gSy').checked=S.sy;$('#gAm').checked=S.am;
+  $('#pWords').value=S.words;$('#pWordsV').textContent=S.words;paintRange($('#pWords'));
+  $('#pSep').value=S.sep;$('#pCap').checked=S.cap;$('#pNum').checked=S.num;
+  $('#sLock').value=String(S.lock);$('#sHide').value=String(S.hide);$('#sTheme').value=S.theme;
+  $$('#gMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===S.mode));
+  $('#oRand').hidden=S.mode!=='rand';$('#oPass').hidden=S.mode!=='pass';
+}
+function readGenUI(){
+  S.len=+$('#gLen').value;S.up=$('#gUp').checked;S.lo=$('#gLo').checked;S.di=$('#gDi').checked;S.sy=$('#gSy').checked;S.am=$('#gAm').checked;
+  S.words=+$('#pWords').value;S.sep=$('#pSep').value;S.cap=$('#pCap').checked;S.num=$('#pNum').checked;
+  $('#gLenV').textContent=S.len;$('#pWordsV').textContent=S.words;paintRange($('#gLen'));paintRange($('#pWords'));
+  saveS();regen(false);
+}
+
+/* ---------- appunti ---------- */
+let clipTok=0;
+async function copy(text,label){
+  try{await navigator.clipboard.writeText(text)}
+  catch(e){const t=h('textarea',{style:'position:fixed;opacity:0'});t.value=text;document.body.append(t);t.select();try{document.execCommand('copy')}catch(_){}t.remove()}
+  toast((label||'Copiato')+' · gli appunti si svuotano tra 30 s');
+  const tok=++clipTok;
+  setTimeout(()=>{if(tok===clipTok&&navigator.clipboard)navigator.clipboard.writeText('').catch(()=>{})},30000);
+}
+
+/* ---------- viste ---------- */
+function view(id){for(const v of ['vSetup','vUnlock','vApp'])$('#'+v).hidden=(v!==id)}
+function tab(id){
+  for(const t of ['tGen','tVault','tSet'])$('#'+t).hidden=(t!==id);
+  $$('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
+  if(id==='tVault')renderList();
+  if(id==='tSet'){refreshBioUI();refreshSyncUI()}
+  scrollTo({top:0})
+}
+$$('.nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+$$('#gMode button').forEach(b=>b.addEventListener('click',()=>{S.mode=b.dataset.m;saveS();syncGenUI();regen(true)}));
+
+/* ---------- elenco ---------- */
+const shown=new Set();
+function hue(str){let x=0;for(const c of str)x=(x*31+c.charCodeAt(0))>>>0;return x%360}
+function renderList(){
+  const box=$('#list');box.replaceChildren();
+  const q=$('#qSearch').value.trim().toLowerCase();
+  const all=(V?V.entries:[]);
+  const cnt=$('#cnt');cnt.textContent=all.length;cnt.style.display=all.length?'grid':'none';
+  const used=new Map();all.forEach(e=>used.set(e.pass,(used.get(e.pass)||0)+1));
+  const reused=all.filter(e=>used.get(e.pass)>1).length, weak=all.filter(e=>estBits(e.pass)<45).length;
+  const chips=$('#chips');chips.replaceChildren();
+  if(all.length){
+    chips.append(h('span',{class:'chip',text:`${all.length} ${all.length===1?'voce':'voci'}`}));
+    chips.append(h('span',{class:'chip '+(reused?'warn':'ok'),text:reused?`${reused} riutilizzate`:'Nessuna riutilizzata'}));
+    chips.append(h('span',{class:'chip '+(weak?'bad':'ok'),text:weak?`${weak} deboli`:'Nessuna debole'}));
+  }
+  const items=all.filter(e=>!q||[e.title,e.user,e.url].some(x=>(x||'').toLowerCase().includes(q)))
+    .sort((a,b)=>a.title.localeCompare(b.title,'it',{sensitivity:'base'}));
+  if(!items.length){
+    box.append(h('div',{class:'empty'},ic('shield'),h('div',{text:all.length?'Nessun risultato.':'La cassaforte è vuota. Genera una password e salvala, oppure premi “Nuova”.'})));
+    return;
+  }
+  items.forEach((e,i)=>{
+    const vis=shown.has(e.id),hu=hue(e.title);
+    const pw=h('div',{class:'pw'});
+    if(vis)pw.append(colorize(e.pass));else pw.textContent='••••••••••••';
+    const flags=[];
+    if(used.get(e.pass)>1)flags.push(h('span',{class:'chip warn',text:'Riutilizzata'}));
+    if(estBits(e.pass)<45)flags.push(h('span',{class:'chip bad',text:'Debole'}));
+    const card=h('div',{class:'card item',style:`animation-delay:${Math.min(i,8)*40}ms`},
+      h('div',{class:'avatar',style:`background:linear-gradient(135deg,hsl(${hu} 75% 58%),hsl(${(hu+50)%360} 75% 46%))`,text:[...e.title][0].toUpperCase()}),
+      h('div',{class:'body'},
+        h('div',{class:'t'},h('span',{text:e.title}),flags),
+        e.user?h('div',{class:'s',text:e.user}):null,
+        e.url?h('div',{class:'s',text:e.url}):null,
+        pw,
+        vis&&e.notes?h('div',{class:'notebox',text:e.notes}):null,
+        vis&&(e.files||[]).length?filesBlock(e):null,
+        !vis&&(e.notes||(e.files||[]).length)?h('div',{class:'s',style:'margin-top:8px',text:attLabel(e)}):null,
+        h('div',{class:'acts'},
+          h('button',{class:'sm',onclick:()=>{if(vis)shown.delete(e.id);else{shown.add(e.id);setTimeout(()=>{if(shown.delete(e.id)&&V&&!$('#tVault').hidden)renderList()},15000)}renderList()},'aria-label':vis?'Nascondi':'Mostra'},ic(vis?'eyeoff':'eye'),vis?'Nascondi':'Mostra'),
+          h('button',{class:'sm',onclick:()=>copy(e.pass,'Password copiata')},ic('copy'),'Password'),
+          e.user?h('button',{class:'sm',onclick:()=>copy(e.user,'Utente copiato')},ic('user'),'Utente'):null,
+          h('button',{class:'sm',onclick:()=>openEntry(e)},ic('edit'),'Modifica'))));
+    box.append(card);
+  });
+}
+$('#qSearch').addEventListener('input',renderList);
+
+/* ---------- dialog voce ---------- */
+let editing=null;
+function entryMeter(){paintMeter($('#eMeter'),estBits($('#ePass').value))}
+function openEntry(e,prefill){
+  editing=e||null;
+  $('#eHead').textContent=e?'Modifica voce':'Nuova voce';
+  $('#eTitle').value=e?e.title:'';$('#eUser').value=e?e.user||'':'';
+  $('#ePass').value=e?e.pass:(prefill||'');$('#ePass').type='password';
+  $('#eUrl').value=e?e.url||'':'';$('#eNotes').value=e?e.notes||'':'';
+  $('#eDel').hidden=!e;entryMeter();stageInit(e);
+  $('#dEntry').showModal();
+  if(!e)$('#eTitle').focus();
+}
+$('#bAdd').addEventListener('click',()=>openEntry(null));
+$('#gSave').addEventListener('click',()=>openEntry(null,cur));
+$('#eCancel').addEventListener('click',()=>$('#dEntry').close());
+$('#ePass').addEventListener('input',entryMeter);
+$('#eShow').addEventListener('click',()=>{const p=$('#ePass'),s=p.type==='password';p.type=s?'text':'password';$('#eShow use').setAttribute('href',s?'#i-eyeoff':'#i-eye')});
+$('#eGen').addEventListener('click',()=>{const g=S.mode==='pass'?genPhrase(S):genPassword(S);if(g.pw){$('#ePass').value=g.pw;$('#ePass').type='text';entryMeter()}else toast('Attiva almeno un tipo di carattere nel generatore')});
+$('#fEntry').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const title=$('#eTitle').value.trim(),pass=$('#ePass').value;
+  if(!title||!pass)return;
+  const now=Date.now();
+  let st;try{st=await stageCommit()}catch(e){return toast('Impossibile salvare gli allegati in questo browser')}
+  const data={title,user:$('#eUser').value.trim(),pass,url:$('#eUrl').value.trim(),notes:$('#eNotes').value.trim(),files:st.files};
+  const backup=JSON.stringify(V.entries),xb=JSON.stringify(V.x);
+  V.x.push(...st.removed);
+  if(editing)Object.assign(editing,data,{updated:now});
+  else V.entries.push({id:uid(),...data,created:now,updated:now});
+  try{await persist();stageDone();$('#dEntry').close();renderList();toast('Salvato nella cassaforte')}
+  catch(e){V.entries=JSON.parse(backup);V.x=JSON.parse(xb)}
+});
+$('#eDel').addEventListener('click',async()=>{
+  if(!editing||!confirm(`Eliminare “${editing.title}”? L'operazione non si può annullare.`))return;
+  const backup=JSON.stringify(V.entries);
+  const delId=editing.id,fx=(editing.files||[]).map(f=>f.id);V.dels[delId]=Date.now();V.x.push(...fx);V.entries=V.entries.filter(x=>x.id!==delId);
+  try{await persist();$('#dEntry').close();renderList();toast('Voce eliminata');gcFiles()}
+  catch(e){V.entries=JSON.parse(backup);delete V.dels[delId];V.x=V.x.filter(i=>!fx.includes(i))}
+});
+
+/* ---------- dialog password ---------- */
+function askPassword(head,text,opt){
+  return new Promise(res=>{
+    const d=$('#dAsk');$('#aHead').textContent=head;$('#aText').textContent=text;$('#aPw').value='';$('#aSk').value='';
+    $('#aSkWrap').hidden=!(opt&&opt.sk);
+    let done=false;
+    const fin=v=>{if(done)return;done=true;d.close();$('#aPw').value='';$('#aSk').value='';$('#fAsk').onsubmit=null;$('#aCancel').onclick=null;res(v)};
+    $('#fAsk').onsubmit=ev=>{ev.preventDefault();fin({pw:$('#aPw').value,sk:$('#aSk').value.trim()})};
+    $('#aCancel').onclick=()=>fin(null);
+    d.addEventListener('cancel',()=>fin(null),{once:true});
+    d.showModal();$('#aPw').focus();
+  });
+}
+/* ---------- chiave segreta ---------- */
+function showSecretKey(skStr,mandatory){
+  return new Promise(res=>{
+    const d=$('#dKey');
+    $('#kVal').textContent=skStr;$('#kOk').checked=false;$('#kOkWrap').hidden=!mandatory;$('#kDone').disabled=!!mandatory;
+    $('#kOk').onchange=()=>{$('#kDone').disabled=!$('#kOk').checked};
+    $('#kCopy').onclick=()=>copy(skStr,'Chiave segreta copiata');
+    $('#kSave').onclick=()=>{
+      const txt='CASSAFORTE PASSWORD - KIT DI EMERGENZA\r\n\r\nChiave segreta: '+skStr+'\r\nCreato il: '+new Date().toLocaleDateString('it-IT')+'\r\n\r\nServe, insieme alla password principale, per aprire la cassaforte su un nuovo dispositivo.\r\nConserva questo file FUORI dal telefono/PC (stampalo o salvalo in un luogo sicuro) e non condividerlo.\r\nNon scrivere qui la password principale.\r\n';
+      const url=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+      const a=h('a',{href:url,download:'cassaforte-kit-emergenza.txt'});document.body.append(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),2000);
+    };
+    $('#kDone').onclick=()=>{d.close();res()};
+    d.oncancel=ev=>{if(mandatory)ev.preventDefault();else res()};
+    d.showModal();
+  });
+}
+
+/* ---------- eventi generatore ---------- */
+$('#gNew').addEventListener('click',()=>regen(true));
+$('#gCopy').addEventListener('click',()=>cur&&copy(cur,'Password copiata'));
+['gLen','gUp','gLo','gDi','gSy','gAm','pWords','pSep','pCap','pNum'].forEach(i=>$('#'+i).addEventListener('input',readGenUI));
+
+/* ---------- sblocco biometrico (WebAuthn + PRF) ---------- */
+function bioOK(){return !!(window.PublicKeyCredential&&navigator.credentials&&location.protocol==='https:')}
+function bioHas(){try{return !!localStorage.getItem(BKEY)}catch(e){return false}}
+async function bioPrf(id,salt){
+  const a=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id}],userVerification:'required',timeout:60000,extensions:{prf:{eval:{first:salt}}}}});
+  const r=a.getClientExtensionResults().prf;
+  if(!r||!r.results||!r.results.first)throw new Error('PRF non disponibile');
+  return r.results.first;
+}
+async function bioKey(out){
+  const m=await crypto.subtle.importKey('raw',out,'HKDF',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'HKDF',hash:'SHA-256',salt:new Uint8Array(0),info:enc.encode('cassaforte-bio-v1')},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function bioEnable(masterPw){
+  const salt=crypto.getRandomValues(new Uint8Array(32));
+  const cred=await navigator.credentials.create({publicKey:{
+    rp:{name:'Cassaforte Password'},
+    user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'cassaforte',displayName:'Cassaforte'},
+    challenge:crypto.getRandomValues(new Uint8Array(32)),
+    pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+    authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},
+    timeout:60000,extensions:{prf:{}}}});
+  const ext=cred.getClientExtensionResults();
+  if(!ext.prf||!ext.prf.enabled)throw new Error('PRF non supportato');
+  const id=new Uint8Array(cred.rawId);
+  const key=await bioKey(await bioPrf(id,salt));
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(masterPw));
+  localStorage.setItem(BKEY,JSON.stringify({id:b64(id),salt:b64(salt),iv:b64(iv),data:b64(ct)}));
+}
+function bioDisable(){try{localStorage.removeItem(BKEY)}catch(e){}}
+function refreshBioUI(){
+  const ok=bioOK(),has=bioHas();
+  $('#bioTxt').textContent=!ok
+    ?'Disponibile quando l\'app è aperta da un indirizzo https (per esempio pubblicata su GitHub Pages) su un dispositivo con impronta o Face ID. Da file locale non è possibile.'
+    :has?'Attivo: puoi sbloccare la cassaforte con impronta o Face ID. La password principale resta sempre valida.'
+    :'Sblocca con impronta o Face ID invece di digitare la password. Richiede un dispositivo e un browser che supportano le passkey.';
+  $('#bioBtn').disabled=!ok;
+  $('#bioBtn span').textContent=has?'Disattiva':'Attiva';
+}
+function refreshBioLock(){$('#bBio').hidden=!(bioOK()&&bioHas())}
+$('#bioBtn').addEventListener('click',async()=>{
+  if(bioHas()){if(confirm('Disattivare lo sblocco biometrico?')){bioDisable();refreshBioUI();toast('Sblocco biometrico disattivato')}return}
+  const r=await askPassword('Conferma la password principale','Serve per collegarla a impronta o Face ID su questo dispositivo.');
+  if(!r)return;
+  if(!await verifyMaster(r.pw))return toast('Password errata');
+  try{await bioEnable(r.pw);refreshBioUI();toast('Sblocco biometrico attivato')}
+  catch(e){bioDisable();toast('Non riuscito: dispositivo o browser senza supporto')}
+});
+async function afterUnlock(res){
+  if(res&&res.sk)await showSecretKey(res.sk,true);
+  enterApp();
+}
+$('#bBio').addEventListener('click',async()=>{
+  $('#uErr').textContent='';
+  try{
+    const b=JSON.parse(localStorage.getItem(BKEY));
+    const key=await bioKey(await bioPrf(unb64(b.id),unb64(b.salt)));
+    const pw=dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(b.iv)},key,unb64(b.data)));
+    const res=await unlockVault(pw);failSet({n:0,until:0});await afterUnlock(res);
+  }catch(e){$('#uErr').textContent='Sblocco biometrico non riuscito. Usa la password.'}
+});
+
+/* ---------- impostazioni ---------- */
+$('#sLock').addEventListener('change',()=>{S.lock=+$('#sLock').value;saveS();armLock()});
+$('#sHide').addEventListener('change',()=>{S.hide=+$('#sHide').value;saveS()});
+$('#sTheme').addEventListener('change',()=>{S.theme=$('#sTheme').value;saveS();applyTheme()});
+$('#fChange').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const o=$('#cOld').value,n=$('#cNew').value,n2=$('#cNew2').value;
+  if(n!==n2)return toast('Le nuove password non coincidono');
+  if(n.length<12)return toast('Minimo 12 caratteri');
+  if(estBits(n)<50)return toast('Password troppo prevedibile: usa una frase più lunga o più varia');
+  if(!await verifyMaster(o))return toast('Password attuale errata');
+  if(V.sync&&!(await syncNow()))return toast('Prima sincronizza il cloud (controlla la connessione), poi cambia la password');
+  const prev={key:V.key,salt:V.salt,iter:V.iter,replace:V.sync&&V.sync.replace};
+  try{
+    const salt=crypto.getRandomValues(new Uint8Array(16));
+    V.key=await deriveKey(n,salt,ITER,getSK());V.salt=b64(salt);V.iter=ITER;
+    if(V.sync)V.sync.replace=true;
+    await persist(true);
+    const hadBio=bioHas();bioDisable();refreshBioUI();
+    ev.target.reset();toast(hadBio?'Password aggiornata · riattiva lo sblocco biometrico':'Password principale aggiornata');
+    syncNow();
+  }catch(e){V.key=prev.key;V.salt=prev.salt;V.iter=prev.iter;if(V.sync)V.sync.replace=prev.replace}
+});
+$('#bShowSk').addEventListener('click',async()=>{
+  if(!await reauth('Conferma la password principale','Serve per mostrare la chiave segreta.'))return;
+  const sk=getSK();if(!sk)return toast('Chiave non presente su questo dispositivo');
+  await showSecretKey(skFormat(sk),false);
+});
+
+/* ---------- cloud: collegamento ---------- */
+$('#syConnect').addEventListener('click',async()=>{
+  const rp=parseRepo($('#syRepo').value),tok=$('#syTok').value.trim();
+  if(!rp)return toast('Scrivi il repository nel formato utente/repository');
+  if(tok.length<20)return toast('Incolla il token di GitHub');
+  const cfg={...rp,token:tok},btn=$('#syConnect');btn.disabled=true;
+  try{
+    await verifyRepo(cfg);
+    const rem=await pullRemote(cfg);
+    let replace=false;
+    if(!rem.missing&&rem.blob.salt!==V.salt){
+      if(!confirm('In questo repository esiste già un\'altra cassaforte. Se prosegui verrà SOSTITUITA con quella di questo dispositivo (la versione precedente resta nella cronologia di GitHub).\n\nPer usare invece quella esistente, annulla e usa «Ho già una cassaforte nel cloud» su un dispositivo nuovo.'))throw SyncError('Annullato','cancel');
+      replace=true;
+    }
+    V.sync={...cfg,last:0};if(replace)V.sync.replace=true;
+    await persist(true);
+    $('#syTok').value='';$('#syRepo').value='';
+    refreshSyncUI();
+    const ok=await syncNow();
+    toast(ok?'Cloud collegato e sincronizzato':'Collegato, ma la sincronizzazione non è riuscita');
+  }catch(e){if(e.code!=='cancel')toast(e.user?e.message:'Collegamento non riuscito')}
+  btn.disabled=false;
+});
+$('#syNow').addEventListener('click',async()=>{const ok=await syncNow();if(ok)toast('Sincronizzato')});
+$('#bSync').addEventListener('click',async()=>{toast('Sincronizzazione…');const ok=await syncNow();if(ok)toast('Sincronizzato')});
+$('#syOff').addEventListener('click',async()=>{
+  if(!confirm('Scollegare il cloud da questo dispositivo? Le password restano qui e nel repository.'))return;
+  V.sync=null;await persist(true);refreshSyncUI();
+});
+$('#bLinkOpen').addEventListener('click',()=>{$('#lErr').textContent='';$('#dLink').showModal();$('#lRepo').focus()});
+$('#lCancel').addEventListener('click',()=>$('#dLink').close());
+$('#fLink').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const rp=parseRepo($('#lRepo').value),tok=$('#lTok').value.trim(),sk=skDecode($('#lSk').value),pw=$('#lPw').value,err=$('#lErr');
+  err.textContent='';
+  if(!rp)return err.textContent='Scrivi il repository nel formato utente/repository';
+  if(!sk)return err.textContent='La chiave segreta non è valida (32 caratteri, lettere e numeri)';
+  const btn=$('#lGo');btn.disabled=true;btn.textContent='Collegamento…';
+  try{
+    const cfg={...rp,token:tok};
+    await verifyRepo(cfg);
+    const rem=await pullRemote(cfg);
+    if(rem.missing)throw SyncError('Nessuna cassaforte trovata in questo repository','none');
+    const b=rem.blob;let key,o;
+    try{key=await deriveKey(pw,unb64(b.salt),b.iter,sk);o=await openBlob(key,b)}
+    catch(e){throw SyncError('Password principale o chiave segreta errate','decrypt')}
+    setSK(sk);
+    V={key,salt:b.salt,iter:b.iter,entries:(o.e||[]).filter(e=>e&&typeof e.id==='string'&&typeof e.title==='string'&&typeof e.pass==='string').map(sanitize),dels:o.d||{},x:[],sync:{...cfg,last:Date.now()}};
+    await persist(true);
+    $('#dLink').close();['#lRepo','#lTok','#lSk','#lPw'].forEach(s=>$(s).value='');
+    enterApp();
+  }catch(e){err.textContent=e.user?e.message:'Collegamento non riuscito'}
+  btn.disabled=false;btn.textContent='Collega';
+});
+
+/* ---------- backup ---------- */
+$('#bExp').addEventListener('click',async()=>{
+  if(!await reauth('Conferma la password principale','Serve per esportare il backup.'))return;
+  const bl=await buildBlob();const fm=await exportFiles();if(Object.keys(fm).length)bl.files=fm;
+  const raw=JSON.stringify(bl);
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name=`cassaforte-backup-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`;
+  const url=URL.createObjectURL(new Blob([raw],{type:'application/json'}));
+  const a=h('a',{href:url,download:name});document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  toast('Backup cifrato scaricato');
+});
+$('#bImp').addEventListener('click',()=>$('#fImp').click());
+$('#fImp').addEventListener('change',async ev=>{
+  const f=ev.target.files[0];ev.target.value='';if(!f)return;
+  let blob;
+  try{blob=JSON.parse(await f.text());if(!validBlob(blob))throw 0}catch(e){return toast('File di backup non valido')}
+  const r=await askPassword('Password del backup','Inserisci la password principale con cui è stato creato questo backup.',{sk:blob.v===2});
+  if(!r)return;
+  let imported;
+  try{
+    if(blob.v===1)imported=await openLegacy(await legacyKey(r.pw,unb64(blob.salt),blob.iter),blob);
+    else{
+      const sk=r.sk?skDecode(r.sk):getSK();if(!sk)throw 0;
+      imported=await openBlob(await deriveKey(r.pw,unb64(blob.salt),blob.iter,sk),blob);
+    }
+  }catch(e){return toast('Password o chiave errata, oppure file danneggiato')}
+  const list=Array.isArray(imported)?imported:(imported&&imported.e)||[];
+  const dels=Array.isArray(imported)?{}:(imported&&imported.d)||{};
+  if(!Array.isArray(list))return toast('Contenuto non valido');
+  const backup=JSON.stringify(V.entries),dbackup=JSON.stringify(V.dels),n0=V.entries.length;
+  await importFiles(blob.files,list);
+  const ch=mergeIn(list,dels);
+  if(!ch){pendingIds.clear();return toast('Nessuna novità nel backup')}
+  try{await persist();renderList();toast(`Importate ${V.entries.length-n0} voci nuove, altre aggiornate`)}
+  catch(e){V.entries=JSON.parse(backup);V.dels=JSON.parse(dbackup)}
+  pendingIds.clear();gcFiles();
+});
+$('#bWipe').addEventListener('click',async()=>{
+  if(!await reauth('Conferma la password principale','Serve per eliminare i dati da questo dispositivo.'))return;
+  if(!confirm('Eliminare DEFINITIVAMENTE la cassaforte da questo dispositivo? Se non hai un backup (o il cloud) perderai tutte le password.'))return;
+  if(!confirm('Ultima conferma: eliminare tutto?'))return;
+  try{localStorage.removeItem(VKEY);localStorage.removeItem(BKEY);localStorage.removeItem(SKKEY);localStorage.removeItem(FKEY)}catch(e){}
+  await dbWipe();
+  V=null;shown.clear();location.reload();
+});
+
+/* ---------- installazione PWA ---------- */
+let dip=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;$('#bInstall').hidden=false});
+$('#bInstall').addEventListener('click',async()=>{if(!dip)return;dip.prompt();try{await dip.userChoice}catch(e){}dip=null;$('#bInstall').hidden=true});
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* ---------- blocco ---------- */
+let lockT=null,hideT=null,hiddenAt=0,lockTick=null;
+function armLock(){clearTimeout(lockT);if(V&&S.lock>0)lockT=setTimeout(lockApp,S.lock*60000)}
+['pointerdown','keydown','scroll','touchstart'].forEach(ev=>addEventListener(ev,()=>{if(V)armLock()},{passive:true}));
+function lockApp(){
+  clearTimeout(lockT);clearTimeout(syncT);clearTimeout(hideT);clearInterval(scr);V=null;shown.clear();cur='';
+  $('#list').replaceChildren();$('#chips').replaceChildren();$('#gOut').replaceChildren();
+  for(const d of $$('dialog'))if(d.open)d.close();
+  ['#ePass','#eUser','#eTitle','#eUrl','#eNotes','#cOld','#cNew','#cNew2','#qSearch','#syTok','#syRepo'].forEach(s=>$(s).value='');
+  $('#uPw').value='';$('#uErr').textContent='';$('#bSync').hidden=true;
+  view('vUnlock');$('#uSkWrap').hidden=!needSk();refreshBioLock();tickLock();$('#uPw').focus();
+  clipTok++;
+  if(navigator.clipboard)navigator.clipboard.writeText('').catch(()=>{});
+}
+$('#bLock').addEventListener('click',lockApp);
+/* blocco quando lasci l'app o la scheda */
+document.addEventListener('visibilitychange',()=>{
+  if(!V)return;
+  if(document.hidden){
+    hiddenAt=Date.now();
+    if(S.hide<0||$('#dKey').open)return;
+    if(S.hide===0)lockApp();
+    else{clearTimeout(hideT);hideT=setTimeout(()=>{if(document.hidden&&!$('#dKey').open)lockApp()},S.hide*1000)}
+  }else{
+    clearTimeout(hideT);
+    if(S.hide>0&&hiddenAt&&Date.now()-hiddenAt>S.hide*1000&&!$('#dKey').open){lockApp();return}
+    if(V.sync&&Date.now()-(V.sync.last||0)>30000)syncNow();
+  }
+});
+addEventListener('online',()=>{if(V&&V.sync)syncNow()});
+addEventListener('offline',()=>{if(V&&V.sync)setSyncUI('offline')});
+setInterval(()=>{if(V&&V.sync&&!document.hidden)syncNow()},300000);
+
+/* ---------- avvio / sblocco / creazione ---------- */
+function enterApp(){
+  view('vApp');$('#uPw').value='';syncGenUI();regen(true);tab('tGen');armLock();refreshSyncUI();gcFiles();
+  if(V.sync){setSyncUI(navigator.onLine?'busy':'offline');syncNow()}
+}
+function tickLock(){
+  clearInterval(lockTick);lockTick=null;
+  let counting=false;
+  const upd=()=>{
+    const left=Math.ceil((failState().until-Date.now())/1000);
+    if(left>0){counting=true;$('#uErr').textContent='Troppi tentativi errati: riprova tra '+left+' s.';$('#bUnlock').disabled=true;return true}
+    $('#bUnlock').disabled=false;if(counting){$('#uErr').textContent='';counting=false}
+    clearInterval(lockTick);lockTick=null;return false;
+  };
+  if(upd())lockTick=setInterval(upd,500);
+}
+$('#sPw').addEventListener('input',()=>{
+  const v=$('#sPw').value,st=paintMeter($('#sMeter'),estBits(v)),c=$('#sChip');
+  c.hidden=!v;c.className='chip '+st.k;c.textContent=st.t;
+});
+$('#fSetup').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const a=$('#sPw').value,b=$('#sPw2').value;
+  if(a.length<12)return toast('Minimo 12 caratteri');
+  if(a!==b)return toast('Le due password non coincidono');
+  if(estBits(a)<50)return toast('Password troppo prevedibile: usa una frase più lunga o più varia');
+  const btn=$('#bSetup');btn.disabled=true;btn.textContent='Creazione in corso…';
+  try{
+    const skStr=await createVault(a);
+    $('#sPw').value=$('#sPw2').value='';
+    await showSecretKey(skStr,true);
+    enterApp();
+  }catch(e){toast('Impossibile creare la cassaforte')}
+  btn.disabled=false;btn.textContent='Crea cassaforte';
+});
+$('#fUnlock').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const st=failState();
+  if(Date.now()<st.until){tickLock();return}
+  const btn=$('#bUnlock');btn.disabled=true;btn.textContent='Sblocco…';$('#uErr').textContent='';
+  let tmpSK=false;
+  try{
+    if(needSk()){const sk=skDecode($('#uSk').value);if(!sk)throw new Error('sk');setSK(sk);tmpSK=true}
+    const res=await unlockVault($('#uPw').value);
+    failSet({n:0,until:0});$('#uPw').value='';$('#uSk').value='';
+    await afterUnlock(res);
+  }catch(e){
+    if(tmpSK)delSK();
+    const n=st.n+1;failSet({n,until:Date.now()+failDelay(n)*1000});
+    $('#uErr').textContent='Password errata.';$('#uSkWrap').hidden=!needSk();
+    tickLock();$('#uPw').select();
+  }
+  btn.textContent='Sblocca';if(Date.now()>=failState().until)btn.disabled=false;
+});
+(function boot(){
+  if(!(window.crypto&&crypto.subtle)){
+    document.body.replaceChildren(h('div',{class:'wrap'},h('div',{class:'card'},h('h2',{text:'Browser non supportato'}),h('p',{class:'mut',text:'La crittografia richiede un browser moderno e una pagina aperta in modo sicuro (file locale o https). Prova con Chrome, Edge, Firefox o Safari aggiornati.'}))));
+    return;
+  }
+  let has=false;
+  try{has=!!localStorage.getItem(VKEY)}catch(e){toast('Il browser blocca il salvataggio locale (navigazione privata?)')}
+  if(has){view('vUnlock');$('#uSkWrap').hidden=!needSk();refreshBioLock();tickLock();$('#uPw').focus()}else{view('vSetup');$('#sPw').focus()}
+})();
+</script>
+</body>
+</html>
