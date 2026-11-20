@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cassaforte">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-d2EQpFuBSs5wef2NnPE2qCUELtTWzxmMeWi+053KzJY='; style-src-elem 'sha256-XWL7eleBCrrIvpuBv5m1gjv+7fLpRP7Z5FMdJ93MJVk='; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; manifest-src 'self'; connect-src https://api.github.com; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9oqzoKRPrJPcf2sFj1MNJTT3JRB3OYDFElS3SRyU3eE='; style-src-elem 'sha256-XWL7eleBCrrIvpuBv5m1gjv+7fLpRP7Z5FMdJ93MJVk='; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; manifest-src 'self'; connect-src https://api.github.com; worker-src 'self'; base-uri 'none'; form-action 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237c5cff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Crect x='28' y='44' width='44' height='34' rx='8' fill='white'/%3E%3Cpath d='M36 44v-8a14 14 0 0 1 28 0v8' stroke='white' stroke-width='7' fill='none'/%3E%3C/svg%3E">
@@ -410,11 +410,17 @@ button.link{background:none;border:0;color:var(--acc2);min-height:0;padding:12px
 </section>
 
 <!-- ============ DIALOG VOCE ============ -->
-<dialog id="dEntry">
+<dialog id="dCreate" aria-labelledby="createHead">
+  <h2 id="createHead">Crea nuovo</h2>
+  <div id="createChoices" style="display:grid;gap:8px"></div>
+  <button id="createCancel" class="full" style="margin-top:16px">Annulla</button>
+</dialog>
+<dialog id="dEntry" aria-labelledby="eHead">
   <form id="fEntry" autocomplete="off">
     <h2 id="eHead">Nuova voce</h2>
     <label for="eTitle" style="margin-top:4px">Nome / sito</label>
     <input id="eTitle" type="text" required maxlength="120" placeholder="es. Gmail">
+    <div id="loginFields">
     <label for="eUser">Utente / email</label>
     <input id="eUser" type="text" maxlength="200" autocapitalize="off" autocorrect="off" spellcheck="false">
     <label for="ePass">Password</label>
@@ -426,11 +432,14 @@ button.link{background:none;border:0;color:var(--acc2);min-height:0;padding:12px
     <div class="meter" style="margin-bottom:0"><i id="eMeter"></i></div>
     <label for="eUrl">Indirizzo sito (facoltativo)</label>
     <input id="eUrl" type="text" maxlength="300" autocapitalize="off" spellcheck="false">
+    </div>
+    <div id="detailFields"></div>
     <label for="eNotes">Note (facoltative: codici di recupero, domande di sicurezza…)</label>
     <textarea id="eNotes" rows="5" maxlength="10000"></textarea>
     <label>Allegati</label>
     <div id="eFiles" class="files"></div>
     <div class="drop" id="eDrop" tabindex="0" role="button" style="margin-top:8px"><svg class="ic" style="vertical-align:-4px"><use href="#i-clip"/></svg> Aggiungi file o trascinali qui</div>
+    <button type="button" class="full" id="scanOpen" style="margin-top:8px">Scansiona documento</button>
     <input id="eFileIn" type="file" multiple hidden>
     <p class="mut" id="eFileInfo" style="margin-top:6px"></p>
     <div class="row" style="margin-top:18px;justify-content:flex-end">
@@ -456,6 +465,16 @@ button.link{background:none;border:0;color:var(--acc2);min-height:0;padding:12px
 </dialog>
 
 <!-- ============ DIALOG ANTEPRIMA ============ -->
+<dialog id="dScan" aria-labelledby="scanTitle">
+  <h2 id="scanTitle">Scansiona documento</h2>
+  <video id="scanVideo" muted playsinline autoplay aria-label="Anteprima fotocamera" style="width:100%;max-height:54vh;object-fit:contain;background:#111" hidden></video>
+  <p id="scanStatus" class="mut" role="status"></p>
+  <div class="row">
+    <button type="button" id="scanClose">Annulla</button>
+    <button type="button" id="scanChoose" hidden>Scegli un file</button>
+    <button type="button" class="pri" id="scanTake" disabled>Acquisisci pagina</button>
+  </div>
+</dialog>
 <dialog id="dPrev">
   <h2 id="pvName" style="word-break:break-all"></h2>
   <div class="prevbox"><img id="pvImg" alt="Anteprima allegato"></div>
@@ -567,7 +586,20 @@ function failDelay(n){return n<3?0:Math.min(900,15*Math.pow(2,n-3))}
 
 /* ---------- cassaforte ---------- */
 let V=null; // {key,salt,iter,entries,dels,sync}
-function sanitize(e){const now=Date.now();return{id:String(e.id),title:String(e.title).slice(0,120),user:String(e.user||'').slice(0,200),pass:String(e.pass).slice(0,500),url:String(e.url||'').slice(0,300),notes:String(e.notes||'').slice(0,10000),files:cleanFiles(e.files),created:+e.created||now,updated:+e.updated||now}}
+const entryTypes=new Map([
+  ['login',{label:'Accedi',fields:[]}],
+  ['card',{label:'Carta di pagamento',fields:[['holder','Intestatario'],['number','Numero carta'],['expiry','Scadenza (MM/AA)']]}],
+  ['bank',{label:'Conto bancario',fields:[['bank','Banca'],['holder','Intestatario'],['iban','IBAN'],['bic','BIC / SWIFT']]}],
+  ['address',{label:'Indirizzo',fields:[['street','Via e numero civico'],['postal','CAP'],['city','Città'],['province','Provincia'],['country','Paese']]}],
+  ['file',{label:'File allegato',fields:[]}],
+  ['contact',{label:'Contatto',fields:[['name','Nome e cognome'],['phone','Telefono'],['email','Email']]}],
+  ['note',{label:'Nota protetta',fields:[]}]
+]);
+function entryKind(e){return entryTypes.has(e?.kind)?e.kind:'login'}
+function cleanDetails(e){
+  return Object.fromEntries(entryTypes.get(entryKind(e)).fields.map(([key])=>[key,String(e.details?.[key]||'').slice(0,300)]));
+}
+function sanitize(e){const now=Date.now();return{kind:entryKind(e),details:cleanDetails(e),id:String(e.id),title:String(e.title).slice(0,120),user:String(e.user||'').slice(0,200),pass:String(e.pass).slice(0,500),url:String(e.url||'').slice(0,300),notes:String(e.notes||'').slice(0,10000),files:cleanFiles(e.files),created:+e.created||now,updated:+e.updated||now}}
 async function persist(skipSync){
   const s=await seal(V.key,{e:V.entries,d:V.dels,s:V.sync,x:V.x},V.iter,V.salt);
   try{localStorage.setItem(VKEY,JSON.stringify({v:2,iter:V.iter,salt:V.salt,iv:s.iv,data:s.data,saved:Date.now()}))}
@@ -815,19 +847,26 @@ function renderStage(){
   }
   $('#eFileInfo').textContent=stage.files.length?`${stage.files.length}/${MAXF} allegati · cifrati prima del salvataggio`:'Immagini, PDF, documenti, archivi… qualsiasi formato, fino a 10 MB ciascuno.';
 }
-async function stageAdd(files){
-  if(!stage)return;
+async function stageAdd(files,active=()=>true){
+  let added=0;
+  const current=stage;
+  if(!current)return;
   for(const f of files){
     if(stage.files.length>=MAXF){toast('Massimo '+MAXF+' allegati per voce');break}
     if(f.size>MAXB){toast('«'+f.name+'» supera i 10 MB');continue}
     try{
       const bytes=new Uint8Array(await f.arrayBuffer());
       const id=uid(),kraw=crypto.getRandomValues(new Uint8Array(32));
-      stage.fresh.set(id,await encFile(id,kraw,bytes));
+      const encrypted=await encFile(id,kraw,bytes);
+      if(current!==stage||!active())return added;
+      if(current.files.length>=MAXF){toast('Massimo '+MAXF+' allegati per voce');break}
+      stage.fresh.set(id,encrypted);
       stage.files.push({id,name:cleanName(f.name),type:String(f.type||'').slice(0,100),size:f.size,k:b64(kraw),added:Date.now()});
+      added++;
     }catch(e){toast('Impossibile leggere «'+f.name+'»')}
   }
   renderStage();
+  return added;
 }
 function stageRemove(id){if(!stage)return;stage.files=stage.files.filter(f=>f.id!==id);stage.fresh.delete(id);renderStage()}
 async function stageCommit(){
@@ -840,13 +879,86 @@ async function stageCommit(){
   return{files:stage.files.map(f=>({...f})),removed};
 }
 function stageDone(){pendingIds.clear();stage=null;gcFiles()}
+const scanDialog=$('#dScan'), scanVideo=$('#scanVideo');
+let scanSession=null;
+function stopScanner(){
+  scanSession=null;
+  const stream=scanVideo.srcObject;
+  if(stream)stream.getTracks().forEach(track=>track.stop());
+  scanVideo.srcObject=null;
+  scanVideo.hidden=true;
+  $('#scanTake').disabled=true;
+}
+function closeScanner(){
+  stopScanner();
+  if(scanDialog.open)scanDialog.close();
+}
+function scanning(session){
+  return session===scanSession && scanDialog.open && session.entry===stage && !!V;
+}
+function scanUnavailable(message){
+  stopScanner();
+  $('#scanStatus').textContent=message;
+  $('#scanChoose').hidden=false;
+}
+$('#scanOpen').addEventListener('click',async()=>{
+  if(!stage||stage.files.length>=MAXF)return toast('Massimo '+MAXF+' allegati per voce');
+  const session={entry:stage};
+  scanSession=session;
+  $('#scanChoose').hidden=true;
+  $('#scanStatus').textContent='Consenti l’accesso alla fotocamera per inquadrare il documento.';
+  scanDialog.showModal();
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:2560},height:{ideal:1920}},audio:false});
+    if(!scanning(session)){stream.getTracks().forEach(track=>track.stop());return}
+    scanVideo.srcObject=stream;
+    scanVideo.hidden=false;
+    await scanVideo.play();
+    if(!scanning(session))return;
+    $('#scanTake').disabled=false;
+    $('#scanStatus').textContent='Inquadra tutta la pagina e premi Acquisisci pagina.';
+  }catch(err){
+    if(scanning(session))scanUnavailable(err.name==='NotAllowedError'?'Accesso alla fotocamera negato. Puoi consentirlo nel browser o scegliere un file.':'Fotocamera non disponibile. Puoi scegliere un file dal dispositivo.');
+  }
+});
+$('#scanTake').addEventListener('click',async()=>{
+  const session=scanSession;
+  if(!session||!scanning(session)||$('#scanTake').disabled)return;
+  const w=scanVideo.videoWidth,h=scanVideo.videoHeight;
+  if(!w||!h)return;
+  $('#scanTake').disabled=true;
+  $('#scanStatus').textContent='Acquisizione della pagina…';
+  const canvas=document.createElement('canvas');
+  try{
+    const ratio=Math.min(1,2560/Math.max(w,h));
+    canvas.width=Math.max(1,Math.round(w*ratio));
+    canvas.height=Math.max(1,Math.round(h*ratio));
+    canvas.getContext('2d').drawImage(scanVideo,0,0,canvas.width,canvas.height);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.9));
+    if(!scanning(session))return;
+    if(!blob)throw Error();
+    const name='Scansione-'+new Date().toISOString().replace(/[:.]/g,'-')+'.jpg';
+    const added=await stageAdd([new File([blob],name,{type:'image/jpeg'})],()=>scanning(session));
+    if(!scanning(session))return;
+    if(!added)throw Error();
+    closeScanner();
+    toast('Pagina acquisita. Premi Salva per conservarla.');
+  }catch(err){
+    if(scanning(session))scanUnavailable('Acquisizione non riuscita. Riprova oppure scegli un file.');
+  }finally{canvas.width=canvas.height=0}
+});
+$('#scanClose').addEventListener('click',closeScanner);
+$('#scanChoose').addEventListener('click',()=>{closeScanner();$('#eFileIn').click()});
+scanDialog.addEventListener('close',()=>{if(!scanDialog.open)stopScanner()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&scanDialog.open)closeScanner()});
+window.addEventListener('pagehide',closeScanner);
 $('#eDrop').addEventListener('click',()=>$('#eFileIn').click());
 $('#eDrop').addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();$('#eFileIn').click()}});
 $('#eFileIn').addEventListener('change',ev=>{const f=[...ev.target.files];ev.target.value='';stageAdd(f)});
 ['dragenter','dragover'].forEach(t=>$('#eDrop').addEventListener(t,ev=>{ev.preventDefault();$('#eDrop').classList.add('on')}));
 ['dragleave','drop'].forEach(t=>$('#eDrop').addEventListener(t,ev=>{ev.preventDefault();$('#eDrop').classList.remove('on')}));
 $('#eDrop').addEventListener('drop',ev=>stageAdd([...ev.dataTransfer.files]));
-$('#dEntry').addEventListener('close',()=>{stage=null});
+$('#dEntry').addEventListener('close',()=>{if($('#dEntry').open)return;stage=null;editing=null;$('#detailFields').replaceChildren();$('#fEntry').reset();$('#eFiles').replaceChildren()});
 
 /* ---------- allegati nell'elenco ---------- */
 const IMG_OK=/^image\/(png|jpeg|gif|webp|bmp|avif|svg\+xml)$/;
@@ -1062,15 +1174,16 @@ function renderList(){
   const q=$('#qSearch').value.trim().toLowerCase();
   const all=(V?V.entries:[]);
   const cnt=$('#cnt');cnt.textContent=all.length;cnt.style.display=all.length?'grid':'none';
-  const used=new Map();all.forEach(e=>used.set(e.pass,(used.get(e.pass)||0)+1));
-  const reused=all.filter(e=>used.get(e.pass)>1).length, weak=all.filter(e=>estBits(e.pass)<45).length;
+  const logins=all.filter(e=>entryKind(e)==='login');
+  const used=new Map();logins.forEach(e=>used.set(e.pass,(used.get(e.pass)||0)+1));
+  const reused=logins.filter(e=>used.get(e.pass)>1).length, weak=logins.filter(e=>estBits(e.pass)<45).length;
   const chips=$('#chips');chips.replaceChildren();
   if(all.length){
     chips.append(h('span',{class:'chip',text:`${all.length} ${all.length===1?'voce':'voci'}`}));
-    chips.append(h('span',{class:'chip '+(reused?'warn':'ok'),text:reused?`${reused} riutilizzate`:'Nessuna riutilizzata'}));
-    chips.append(h('span',{class:'chip '+(weak?'bad':'ok'),text:weak?`${weak} deboli`:'Nessuna debole'}));
+    if(logins.length)chips.append(h('span',{class:'chip '+(reused?'warn':'ok'),text:reused?`${reused} riutilizzate`:'Nessuna riutilizzata'}));
+    if(logins.length)chips.append(h('span',{class:'chip '+(weak?'bad':'ok'),text:weak?`${weak} deboli`:'Nessuna debole'}));
   }
-  const items=all.filter(e=>!q||[e.title,e.user,e.url].some(x=>(x||'').toLowerCase().includes(q)))
+  const items=all.filter(e=>!q||[e.title,e.user,e.url,entryTypes.get(entryKind(e)).label].some(x=>(x||'').toLowerCase().includes(q)))
     .sort((a,b)=>a.title.localeCompare(b.title,'it',{sensitivity:'base'}));
   if(!items.length){
     box.append(h('div',{class:'empty'},ic('shield'),h('div',{text:all.length?'Nessun risultato.':'La cassaforte è vuota. Genera una password e salvala, oppure premi “Nuova”.'})));
@@ -1078,24 +1191,27 @@ function renderList(){
   }
   items.forEach((e,i)=>{
     const vis=shown.has(e.id),hu=hue(e.title);
+    const kind=entryKind(e), login=kind==='login', template=entryTypes.get(kind);
     const pw=h('div',{class:'pw'});
     if(vis)pw.append(colorize(e.pass));else pw.textContent='••••••••••••';
     const flags=[];
-    if(used.get(e.pass)>1)flags.push(h('span',{class:'chip warn',text:'Riutilizzata'}));
-    if(estBits(e.pass)<45)flags.push(h('span',{class:'chip bad',text:'Debole'}));
+    if(login&&used.get(e.pass)>1)flags.push(h('span',{class:'chip warn',text:'Riutilizzata'}));
+    if(login&&estBits(e.pass)<45)flags.push(h('span',{class:'chip bad',text:'Debole'}));
     const card=h('div',{class:'card item',style:`animation-delay:${Math.min(i,8)*40}ms`},
       h('div',{class:'avatar',style:`background:linear-gradient(135deg,hsl(${hu} 75% 58%),hsl(${(hu+50)%360} 75% 46%))`,text:[...e.title][0].toUpperCase()}),
       h('div',{class:'body'},
         h('div',{class:'t'},h('span',{text:e.title}),flags),
         e.user?h('div',{class:'s',text:e.user}):null,
         e.url?h('div',{class:'s',text:e.url}):null,
-        pw,
+        h('div',{class:'s',text:template.label}),
+        login?pw:null,
+        vis?template.fields.filter(([key])=>e.details?.[key]).map(([key,label])=>h('div',{class:'notebox',text:label+' · '+e.details[key]})):null,
         vis&&e.notes?h('div',{class:'notebox',text:e.notes}):null,
         vis&&(e.files||[]).length?filesBlock(e):null,
         !vis&&(e.notes||(e.files||[]).length)?h('div',{class:'s',style:'margin-top:8px',text:attLabel(e)}):null,
         h('div',{class:'acts'},
           h('button',{class:'sm',onclick:()=>{if(vis)shown.delete(e.id);else{shown.add(e.id);setTimeout(()=>{if(shown.delete(e.id)&&V&&!$('#tVault').hidden)renderList()},15000)}renderList()},'aria-label':vis?'Nascondi':'Mostra'},ic(vis?'eyeoff':'eye'),vis?'Nascondi':'Mostra'),
-          h('button',{class:'sm',onclick:()=>copy(e.pass,'Password copiata')},ic('copy'),'Password'),
+          login?h('button',{class:'sm',onclick:()=>copy(e.pass,'Password copiata')},ic('copy'),'Password'):null,
           e.user?h('button',{class:'sm',onclick:()=>copy(e.user,'Utente copiato')},ic('user'),'Utente'):null,
           h('button',{class:'sm',onclick:()=>openEntry(e)},ic('edit'),'Modifica'))));
     box.append(card);
@@ -1106,9 +1222,24 @@ $('#qSearch').addEventListener('input',renderList);
 /* ---------- dialog voce ---------- */
 let editing=null;
 function entryMeter(){paintMeter($('#eMeter'),estBits($('#ePass').value))}
-function openEntry(e,prefill){
+function openEntry(e,prefill,kind=entryKind(e)){
+  const template=entryTypes.get(kind), login=kind==='login';
+  $('#fEntry').dataset.kind=kind;
+  $('#loginFields').hidden=!login;
+  $('#ePass').required=login;
+  $('#eNotes').required=kind==='note';
+  $('label[for="eNotes"]').textContent=kind==='note'?'Testo della nota':'Note (facoltative)';
+  $('label[for="eTitle"]').textContent=login?'Nome / sito':'Titolo';
+  $('#eTitle').placeholder=login?'es. Gmail':'';
+  const fields=$('#detailFields');
+  fields.replaceChildren();
+  for(const [key,label] of template.fields){
+    const id='detail-'+key, input=h('input',{id,type:'text',maxlength:'300',spellcheck:'false'});
+    input.value=e?.details?.[key]||'';
+    fields.append(h('label',{for:id,text:label}),input);
+  }
   editing=e||null;
-  $('#eHead').textContent=e?'Modifica voce':'Nuova voce';
+  $('#eHead').textContent=(e?'Modifica · ':'Crea · ')+template.label;
   $('#eTitle').value=e?e.title:'';$('#eUser').value=e?e.user||'':'';
   $('#ePass').value=e?e.pass:(prefill||'');$('#ePass').type='password';
   $('#eUrl').value=e?e.url||'':'';$('#eNotes').value=e?e.notes||'':'';
@@ -1116,7 +1247,14 @@ function openEntry(e,prefill){
   $('#dEntry').showModal();
   if(!e)$('#eTitle').focus();
 }
-$('#bAdd').addEventListener('click',()=>openEntry(null));
+for(const [kind,{label}] of entryTypes){
+  $('#createChoices').append(h('button',{type:'button',text:label,onclick:()=>{
+    $('#dCreate').close();
+    openEntry(null,'',kind);
+  }}));
+}
+$('#bAdd').addEventListener('click',()=>$('#dCreate').showModal());
+$('#createCancel').addEventListener('click',()=>$('#dCreate').close());
 $('#gSave').addEventListener('click',()=>openEntry(null,cur));
 $('#eCancel').addEventListener('click',()=>$('#dEntry').close());
 $('#ePass').addEventListener('input',entryMeter);
@@ -1125,10 +1263,15 @@ $('#eGen').addEventListener('click',()=>{const g=S.mode==='pass'?genPhrase(S):ge
 $('#fEntry').addEventListener('submit',async ev=>{
   ev.preventDefault();
   const title=$('#eTitle').value.trim(),pass=$('#ePass').value;
-  if(!title||!pass)return;
+  const kind=$('#fEntry').dataset.kind;
+  if(!title)return toast('Inserisci un titolo');
+  if(kind==='login'&&!pass)return;
+  if(kind==='note'&&!$('#eNotes').value.trim())return toast('Inserisci il testo della nota');
+  if(kind==='file'&&!stage?.files.length)return toast('Aggiungi almeno un file');
+  const details=Object.fromEntries(entryTypes.get(kind).fields.map(([key])=>[key,$('#detail-'+key).value.trim()]));
   const now=Date.now();
   let st;try{st=await stageCommit()}catch(e){return toast('Impossibile salvare gli allegati in questo browser')}
-  const data={title,user:$('#eUser').value.trim(),pass,url:$('#eUrl').value.trim(),notes:$('#eNotes').value.trim(),files:st.files};
+  const data={kind,details,title,user:$('#eUser').value.trim(),pass,url:$('#eUrl').value.trim(),notes:$('#eNotes').value.trim(),files:st.files};
   const backup=JSON.stringify(V.entries),xb=JSON.stringify(V.x);
   V.x.push(...st.removed);
   if(editing)Object.assign(editing,data,{updated:now});
